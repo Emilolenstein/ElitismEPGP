@@ -1,0 +1,133 @@
+name: Release
+
+# Triggered when a tag matching v*.*.* is pushed (e.g. v0.1.0).
+# Builds a clean addon zip, attaches it to a GitHub Release, posts a
+# notification to Discord.
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write  # required to create the GitHub Release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Derive version
+        id: vars
+        run: |
+          # tag is like "v0.1.0" — strip the leading v
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          echo "tag=${TAG}"         >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Verify TOC version matches tag
+        run: |
+          TOC_VERSION=$(grep -E '^## Version:' ElitismEPGP.toc | sed -E 's/^## Version:[[:space:]]*//' | tr -d '[:space:]')
+          if [ "$TOC_VERSION" != "${{ steps.vars.outputs.version }}" ]; then
+            echo "::error::TOC ## Version: ($TOC_VERSION) does not match tag (${{ steps.vars.outputs.version }})."
+            echo "Bump the TOC before tagging, or re-tag to match the TOC."
+            exit 1
+          fi
+          echo "TOC version $TOC_VERSION matches tag — proceeding."
+
+      - name: Extract changelog section for this version
+        id: changelog
+        run: |
+          # Pull the section between "## [VERSION]" and the next "## [" header.
+          # Falls back to a one-liner if the section can't be found.
+          VERSION="${{ steps.vars.outputs.version }}"
+          if [ -f CHANGELOG.md ]; then
+            NOTES=$(awk -v ver="$VERSION" '
+              /^## \[/ {
+                if (capture) { exit }
+                if ($0 ~ "^## \\[" ver "\\]") { capture=1; next }
+              }
+              capture { print }
+            ' CHANGELOG.md)
+          fi
+          if [ -z "$NOTES" ]; then
+            NOTES="Release v${VERSION}."
+          fi
+          # Write the notes to a file so the multi-line content survives.
+          printf '%s\n' "$NOTES" > release-notes.md
+          echo "wrote release-notes.md ($(wc -l < release-notes.md) lines)"
+
+      - name: Build addon zip
+        run: |
+          STAGE=staging
+          ADDON=ElitismEPGP
+          mkdir -p "$STAGE/$ADDON"
+
+          # Copy everything except dev-only / repo-only stuff. The zip
+          # contains a top-level ElitismEPGP/ folder so users can drop
+          # it straight into Interface\AddOns\.
+          rsync -av \
+            --exclude='.git'           \
+            --exclude='.github'        \
+            --exclude='.vscode'        \
+            --exclude='.idea'          \
+            --exclude='staging'        \
+            --exclude='release-notes.md' \
+            --exclude='*.md'           \
+            --exclude='LICENSE'        \
+            --exclude='screenshots'    \
+            --exclude='.gitignore'     \
+            --exclude='.editorconfig'  \
+            ./ "$STAGE/$ADDON/"
+
+          # Keep LICENSE in the shipped addon — small, and lets players
+          # see the terms without visiting GitHub.
+          cp LICENSE "$STAGE/$ADDON/LICENSE"
+
+          # Build the zip with the version baked into the filename.
+          ZIP_NAME="ElitismEPGP-${{ steps.vars.outputs.version }}.zip"
+          (cd "$STAGE" && zip -r "../$ZIP_NAME" "$ADDON")
+          echo "Built $ZIP_NAME ($(du -h $ZIP_NAME | cut -f1))"
+          echo "zip_name=$ZIP_NAME" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        id: gh_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name:  ${{ steps.vars.outputs.tag }}
+          name:      Elitism EPGP ${{ steps.vars.outputs.tag }}
+          body_path: release-notes.md
+          files:     ${{ env.zip_name }}
+          draft:     false
+          prerelease: false
+
+      - name: Post to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "DISCORD_WEBHOOK secret not set — skipping Discord notification."
+            exit 0
+          fi
+          # Trim notes to Discord's 1500-char limit (leaves room for the
+          # surrounding template); GitHub release body can be much longer.
+          NOTES=$(head -c 1500 release-notes.md)
+          DOWNLOAD_URL="${{ steps.gh_release.outputs.url }}"
+
+          # Build the JSON payload as a heredoc and pipe to curl.
+          jq -n \
+            --arg title "Elitism EPGP ${{ steps.vars.outputs.tag }} released" \
+            --arg url   "$DOWNLOAD_URL" \
+            --arg notes "$NOTES" \
+            '{
+              embeds: [{
+                title: $title,
+                url: $url,
+                description: $notes,
+                color: 16766720
+              }]
+            }' \
+          | curl -sS -H "Content-Type: application/json" \
+                 -X POST -d @- "$DISCORD_WEBHOOK"

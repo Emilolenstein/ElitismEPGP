@@ -1,0 +1,40 @@
+name: Feature request
+description: Suggest a feature, a polish improvement, or a workflow change.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the current pain point or the gap you're hitting.
+      placeholder: |
+        When I do X, I wish the addon would Y.
+        Right now I have to Z manually every raid.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to see happen?
+      description: Your proposed solution. Rough ideas are fine — we'll figure out the details together.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Other approaches you thought about, or workarounds you're using today.
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Who does this affect?
+      multiple: true
+      options:
+        - Raiders (people receiving loot)
+        - Officers (people running the EP/GP system)
+        - Raid Leaders (running pulls)
+        - Guild Master

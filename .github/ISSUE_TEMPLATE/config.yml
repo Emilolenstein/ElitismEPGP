@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discord
+    url: https://discord.gg/your-invite-here
+    about: Quick questions and discussion are better suited to Discord. Open a GitHub issue for bugs and feature requests that need tracking.

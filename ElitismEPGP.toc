@@ -1,0 +1,51 @@
+## Interface: 30300
+## Title: ElitismEPGP
+## Notes: EP/GP loot system with AtlasLoot integration
+## Author: Elitism
+## Version: 0.1.0
+## SavedVariables: ElitismEPGPDB
+## OptionalDeps: AtlasLoot, DBM-Core
+## X-Category: Raid
+## X-Embeds: Ace3
+
+embeds.xml
+
+Constants.lua
+Storage.lua
+Roster.lua
+Awards.lua
+Sync.lua
+GuildSync.lua
+Encounter.lua
+Dev.lua
+Minimap.lua
+Prices.lua
+Tooltip.lua
+Loot.lua
+RaidSession.lua
+Backup.lua
+
+UI\MainFrame.xml
+UI\Skin.lua
+UI\Dialog.lua
+UI\StandingsTab.lua
+UI\HistoryTab.lua
+UI\HistoryDetailFrame.lua
+UI\PlayerDetailFrame.lua
+UI\PricesTab.lua
+UI\AtlasLootHook.lua
+UI\RaidManager.lua
+UI\RaidInfo.lua
+UI\SessionLogs.lua
+UI\SessionLogDetail.lua
+UI\BidFrame.xml
+UI\BidFrame.lua
+UI\RaiderBid.xml
+UI\RaiderBid.lua
+UI\LootQueue.xml
+UI\LootQueue.lua
+UI\BackupFrame.lua
+UI\MainFrame.lua
+
+Options.lua
+Core.lua

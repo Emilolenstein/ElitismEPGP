@@ -1,0 +1,66 @@
+name: Bug report
+description: Something broke or behaved unexpectedly in-game.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please fill in what you can — partial info still helps.
+
+  - type: input
+    id: version
+    attributes:
+      label: Addon version
+      description: Shown on the Interface > AddOns > Elitism EPGP page (and on the minimap tooltip).
+      placeholder: e.g. 0.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: client
+    attributes:
+      label: Client / server
+      description: Which WoW client and server?
+      placeholder: e.g. Ascension 3.3.5a
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect to happen, and what actually happened?
+      placeholder: |
+        Steps to reproduce:
+        1. Opened the bid window after a boss kill
+        2. Clicked Main-Spec
+        3. ...
+
+        Expected: my bid was registered
+        Actually: nothing happened, no chat message
+    validations:
+      required: true
+
+  - type: textarea
+    id: lua-error
+    attributes:
+      label: Lua error (if any)
+      description: Paste the full Lua error from BugSack / BugGrabber / the default Lua error popup. Include the stack trace.
+      render: lua
+
+  - type: dropdown
+    id: rank
+    attributes:
+      label: Are you an officer in your guild?
+      description: Some bugs only surface on the officer path; this helps us narrow it down.
+      options:
+        - "Yes — I have Edit Officer Note rank"
+        - "No — I'm a regular member"
+        - "I don't know"
+
+  - type: textarea
+    id: extras
+    attributes:
+      label: Anything else?
+      description: Other addons running, screenshots, recent changes, anything you think might be relevant.

@@ -1,0 +1,27 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+*~
+
+# Screenshots dropped during dev
+Screenshot*.png
+Screenshot*.jpg
+
+# Local SavedVariables / WTF dumps if any get copied here by accident
+*.lua.bak
+WTF/
+
+# Editor / IDE configs (not needed in the repo)
+.vscode/
+.idea/
+
+# Build / release artifacts (release.yml stages into ./staging)
+/staging/
+/dist/
+*.zip
+release-notes.md
+
+# Local Claude / agent state
+.claude/

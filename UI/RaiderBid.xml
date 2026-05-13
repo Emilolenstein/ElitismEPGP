@@ -1,0 +1,122 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+    <Frame name="ElitismEPGPRaiderBidFrame" parent="UIParent" enableMouse="true" movable="true" hidden="true" frameStrata="DIALOG">
+        <!-- Compact: timer row, item row, then the Need/Greed/Pass buttons
+             tucked under the icon (the buttons are BOTTOM-anchored, so this
+             height sets the icon→button gap). RaiderBid:Restore must use this
+             same height when un-minimizing. -->
+        <Size x="320" y="126"/>
+        <!-- Default anchor mirrors GroupLootFrame (CENTER, y=104 from UIParent
+             centre) so the raider popup opens where the stock Need/Greed
+             window appears. -->
+        <Anchors><Anchor point="CENTER" relativeTo="$parent" relativePoint="CENTER" x="0" y="104"/></Anchors>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <!-- No "Bid on Loot" title: the popup is self-explanatory and
+                     the raid-chat heads-up announces it. Top row is the fancy
+                     countdown bar (built in Lua, ~16px tall) + the small
+                     countdown label; the item row sits below it. -->
+                <Texture parentKey="itemIcon">
+                    <Size x="40" y="40"/>
+                    <Anchors><Anchor point="TOPLEFT" x="14" y="-34"/></Anchors>
+                </Texture>
+                <FontString parentKey="itemName" inherits="GameFontHighlight" justifyH="LEFT">
+                    <!-- Size up to 14pt in RaiderBid:Init; 18px region fits it. -->
+                    <Size x="240" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="64" y="-34"/></Anchors>
+                </FontString>
+                <!-- itemMeta carries "ilvl N • <bid status>" — the per-item
+                     level plus the inline bid state (built in RaiderBid:RefreshStatus).
+                     Sized up to 12pt in RaiderBid:Init; 14px region fits it. -->
+                <FontString parentKey="itemMeta" inherits="GameFontDisableSmall" justifyH="LEFT">
+                    <Size x="240" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="64" y="-56"/></Anchors>
+                </FontString>
+                <FontString parentKey="timerText" inherits="GameFontHighlight" justifyH="RIGHT">
+                    <!-- White, no low-time colour transition. y=-6 so the 14px
+                         region's centre lands at y=-13 — the vertical centre
+                         of the 16px-tall timerBar (TOPLEFT 8,-5). -->
+                    <Size x="48" y="14"/>
+                    <Anchors><Anchor point="TOPRIGHT" x="-47" y="-6"/></Anchors>
+                </FontString>
+                <!-- Collapsed-state widgets: the countdown text and, below it,
+                     the bare bid action (Mainspec / Offspec / Pass). Both
+                     hidden by default and re-anchored in RaiderBid:Minimize. -->
+                <FontString parentKey="minTimer" inherits="GameFontHighlightSmall" justifyH="CENTER" hidden="true">
+                    <Size x="120" y="14"/>
+                    <Anchors><Anchor point="BOTTOM" x="0" y="14"/></Anchors>
+                </FontString>
+                <FontString parentKey="minBidAction" inherits="GameFontHighlightSmall" justifyH="CENTER" hidden="true">
+                    <Size x="120" y="14"/>
+                    <Anchors><Anchor point="BOTTOM" x="0" y="14"/></Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="OVERLAY">
+                <!-- Rarity frame for the item icon (LootToast border atlas).
+                     Hidden by default; RaiderBid:Init re-anchors it to a small
+                     outset around itemIcon, and RaiderBid:Show shows + paints
+                     it for blue/epic/legendary loot (nothing below that). The
+                     XML anchor here is just a placeholder — Init overrides it. -->
+                <Texture parentKey="itemIconBorder" hidden="true">
+                    <Size x="46" y="46"/>
+                    <Anchors><Anchor point="TOPLEFT" x="5" y="-24"/></Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Button parentKey="minimizeButton">
+                <Size x="22" y="22"/>
+                <Anchors><Anchor point="TOPRIGHT" x="-12" y="-10"/></Anchors>
+                <NormalTexture file="Interface\Buttons\UI-MinusButton-UP"/>
+                <PushedTexture file="Interface\Buttons\UI-MinusButton-DOWN"/>
+                <HighlightTexture file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD"/>
+            </Button>
+
+            <Button parentKey="restoreButton" hidden="true">
+                <Size x="48" y="48"/>
+                <Anchors><Anchor point="TOPLEFT" x="16" y="-14"/></Anchors>
+                <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+            </Button>
+
+            <Button parentKey="itemMouseover">
+                <Size x="40" y="40"/>
+                <Anchors><Anchor point="TOPLEFT" x="14" y="-34"/></Anchors>
+            </Button>
+
+            <!-- Need/Greed/Pass row along the bottom; whole group nudged 3px
+                 left of centre. -->
+            <Button parentKey="btnNeed" inherits="UIPanelButtonTemplate" text="Mainspec">
+                <Size x="92" y="24"/>
+                <Anchors><Anchor point="BOTTOMLEFT" x="11" y="7"/></Anchors>
+            </Button>
+            <Button parentKey="btnGreed" inherits="UIPanelButtonTemplate" text="Offspec">
+                <Size x="92" y="24"/>
+                <Anchors><Anchor point="BOTTOM" x="-3" y="7"/></Anchors>
+            </Button>
+            <Button parentKey="btnPass" inherits="UIPanelButtonTemplate" text="Pass">
+                <Size x="92" y="24"/>
+                <Anchors><Anchor point="BOTTOMRIGHT" x="-17" y="7"/></Anchors>
+            </Button>
+
+            <!-- timerBar (the fancy ui-frame-bar-* countdown bar) is built in
+                 RaiderBid:Init via Skin:CreateProgressBar and anchored into the
+                 top row alongside timerText. RaiderBid:Minimize re-anchors +
+                 narrows it for the collapsed card; it's used in both states. -->
+        </Frames>
+
+        <Scripts>
+            <OnMouseDown>if button == "LeftButton" then self:StartMoving() end</OnMouseDown>
+            <OnMouseUp>self:StopMovingOrSizing()</OnMouseUp>
+        </Scripts>
+    </Frame>
+</Ui>

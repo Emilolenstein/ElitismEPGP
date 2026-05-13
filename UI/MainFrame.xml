@@ -1,0 +1,1511 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+    <Frame name="ElitismEPGP_RowTemplate" virtual="true" enableMouse="true">
+        <Size x="444" y="18"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="bg" setAllPoints="true">
+                    <Color r="1" g="1" b="1" a="0"/>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="rank" inherits="GameFontNormalSmall" justifyH="LEFT">
+                    <Size x="24" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="6" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="name"  inherits="GameFontNormalSmall" justifyH="LEFT">
+                    <Size x="116" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="30"  y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="class" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="68" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="146" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="level" inherits="GameFontHighlightSmall" justifyH="RIGHT">
+                    <Size x="28" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="218" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="ep"    inherits="GameFontHighlightSmall" justifyH="RIGHT">
+                    <Size x="60"  y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="250" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="gp"    inherits="GameFontHighlightSmall" justifyH="RIGHT">
+                    <Size x="60"  y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="316" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="pr"    inherits="GameFontHighlightSmall" justifyH="RIGHT">
+                    <Size x="60"  y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="382" y="0"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Frame name="ElitismEPGP_HistoryRowTemplate" virtual="true" enableMouse="true">
+        <Size x="444" y="18"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="bg" setAllPoints="true">
+                    <Color r="1" g="1" b="1" a="0"/>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="time" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="76" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="4" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="actor" inherits="GameFontNormalSmall" justifyH="LEFT">
+                    <Size x="80" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="80" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="target" inherits="GameFontNormalSmall" justifyH="LEFT">
+                    <Size x="90" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="155" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="delta" inherits="GameFontHighlightSmall" justifyH="RIGHT">
+                    <Size x="64" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="247" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="reason" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="124" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="320" y="0"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnEnter>if ElitismEPGP_HistoryTab and ElitismEPGP_HistoryTab.OnRowEnter then ElitismEPGP_HistoryTab:OnRowEnter(self) end</OnEnter>
+            <OnLeave>if ElitismEPGP_HistoryTab and ElitismEPGP_HistoryTab.OnRowLeave then ElitismEPGP_HistoryTab:OnRowLeave(self) end</OnLeave>
+            <OnMouseUp>if ElitismEPGP_HistoryTab and ElitismEPGP_HistoryTab.OnRowClick then ElitismEPGP_HistoryTab:OnRowClick(self, button) end</OnMouseUp>
+        </Scripts>
+    </Frame>
+
+    <Frame name="ElitismEPGP_PriceRowTemplate" virtual="true" enableMouse="true">
+        <Size x="444" y="20"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="bg" setAllPoints="true">
+                    <Color r="1" g="1" b="1" a="0"/>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture parentKey="expander" hidden="true">
+                    <Size x="16" y="16"/>
+                    <Anchors><Anchor point="TOPLEFT" x="4" y="-2"/></Anchors>
+                </Texture>
+                <FontString parentKey="itemName" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="200" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="46" y="-1"/></Anchors>
+                </FontString>
+                <FontString parentKey="mode" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="60" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="252" y="-1"/></Anchors>
+                </FontString>
+                <FontString parentKey="value" inherits="GameFontHighlightSmall" justifyH="RIGHT">
+                    <Size x="100" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="316" y="-1"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button parentKey="icon">
+                <Size x="20" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="22" y="0"/></Anchors>
+                <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+            </Button>
+            <Button parentKey="clearButton">
+                <Size x="14" y="14"/>
+                <Anchors><Anchor point="TOPRIGHT" x="-4" y="-3"/></Anchors>
+                <NormalTexture file="Interface\Buttons\UI-MinusButton-Up"/>
+                <PushedTexture file="Interface\Buttons\UI-MinusButton-Down"/>
+                <HighlightTexture file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD"/>
+            </Button>
+        </Frames>
+    </Frame>
+
+    <!-- Player history row: 4 columns (When/By/Points/Reason) for the
+         player-detail side popup. Slimmer than the full history row since
+         the Target column is implied (always the selected player). -->
+    <Frame name="ElitismEPGP_PlayerHistoryRowTemplate" virtual="true" enableMouse="true">
+        <Size x="310" y="18"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="bg" setAllPoints="true">
+                    <Color r="1" g="1" b="1" a="0"/>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="time" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="68" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="4" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="actor" inherits="GameFontNormalSmall" justifyH="LEFT">
+                    <Size x="72" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="77" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="delta" inherits="GameFontHighlightSmall" justifyH="RIGHT">
+                    <Size x="64" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="139" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="reason" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="94" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="214" y="0"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Frame name="ElitismEPGP_DetailRowTemplate" virtual="true">
+        <Size x="310" y="18"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="player" inherits="GameFontNormalSmall" justifyH="LEFT">
+                    <Size x="140" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="4" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="delta" inherits="GameFontHighlightSmall" justifyH="RIGHT">
+                    <Size x="64" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="141" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="change" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="94" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="212" y="0"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Frame name="ElitismEPGP_RecipientRowTemplate" virtual="true">
+        <Size x="460" y="16"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="name" inherits="GameFontNormalSmall" justifyH="LEFT">
+                    <Size x="160" y="16"/>
+                    <Anchors><Anchor point="TOPLEFT" x="6" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="class" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="120" y="16"/>
+                    <Anchors><Anchor point="TOPLEFT" x="170" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="status" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="120" y="16"/>
+                    <Anchors><Anchor point="TOPLEFT" x="294" y="0"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Frame name="ElitismEPGPMainFrame" parent="UIParent" enableMouse="true" movable="true" hidden="true" frameStrata="MEDIUM">
+        <Size x="500" y="500"/>
+        <Anchors><Anchor point="CENTER"/></Anchors>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <!-- Carries the addon's title (yellow ElitismEPGP) or, in dev
+                     mode, a blue DEV / [DEV mock: N] indicator. Anchor is
+                     CENTER-pinned to a fixed offset from the frame's TOPLEFT
+                     so the title-banner artwork that follows it (see
+                     MainFrame:Init) stays put across label-text changes —
+                     short text doesn't yank the banner left. -->
+                <FontString parentKey="title" inherits="GameFontNormal" justifyH="CENTER" text="">
+                    <Anchors><Anchor point="CENTER" relativeTo="$parent" relativePoint="TOPLEFT" x="63" y="26"/></Anchors>
+                </FontString>
+                <FontString parentKey="status" inherits="GameFontDisableSmall" justifyH="LEFT">
+                    <Size x="460" y="14"/>
+                    <Anchors><Anchor point="BOTTOMLEFT" x="20" y="18"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Button parentKey="menuButton">
+                <Size x="24" y="24"/>
+                <Anchors><Anchor point="TOPRIGHT" x="-10" y="-8"/></Anchors>
+            </Button>
+
+            <Button parentKey="tab_menu" inherits="UIPanelButtonTemplate">
+                <Size x="30" y="30"/>
+            </Button>
+            <Button parentKey="tab_standings" inherits="UIPanelButtonTemplate">
+                <Size x="90" y="37"/>
+            </Button>
+            <Button parentKey="tab_history" inherits="UIPanelButtonTemplate">
+                <Size x="90" y="37"/>
+            </Button>
+            <Button parentKey="tab_prices" inherits="UIPanelButtonTemplate">
+                <Size x="90" y="37"/>
+            </Button>
+
+            <Frame parentKey="tabContent">
+                <Size x="468" y="430"/>
+                <Anchors><Anchor point="TOPLEFT" x="16" y="-40"/></Anchors>
+            </Frame>
+
+            <Frame name="ElitismEPGPStandingsTab" hidden="true">
+                <Size x="468" y="430"/>
+                <Anchors><Anchor point="TOPLEFT" x="16" y="-40"/></Anchors>
+
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <!-- Search/filter row sits ABOVE the standings frame top, inline
+                             with the main window's close button. Positive y offsets put
+                             these labels in the gap between MainFrame top and the
+                             standings tab content (frame top is at standings y=0). -->
+                        <FontString parentKey="searchLabel" inherits="GameFontNormalSmall" text="Search:" justifyH="LEFT">
+                            <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="6" y="20"/></Anchors>
+                        </FontString>
+                        <FontString parentKey="hasPRLabel" inherits="GameFontNormalSmall" text="Has PR" justifyH="LEFT">
+                            <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="222" y="20"/></Anchors>
+                        </FontString>
+                        <FontString parentKey="onlineLabel" inherits="GameFontNormalSmall" text="Online" justifyH="LEFT">
+                            <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="310" y="20"/></Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+
+                <Frames>
+                    <EditBox parentKey="searchFilter" letters="32" autoFocus="false">
+                        <Size x="130" y="20"/>
+                        <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="50" y="20"/></Anchors>
+                        <FontString inherits="ChatFontNormal"/>
+                        <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground"
+                                  edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                            <BackgroundInsets><AbsInset left="3" right="3" top="3" bottom="3"/></BackgroundInsets>
+                            <TileSize><AbsValue val="16"/></TileSize>
+                            <EdgeSize><AbsValue val="12"/></EdgeSize>
+                            <Color r="0" g="0" b="0" a="0.6"/>
+                        </Backdrop>
+                        <Scripts>
+                            <OnEscapePressed>self:ClearFocus()</OnEscapePressed>
+                            <OnEnterPressed>self:ClearFocus()</OnEnterPressed>
+                        </Scripts>
+                    </EditBox>
+                    <CheckButton parentKey="hasPRFilter" inherits="UICheckButtonTemplate">
+                        <Size x="22" y="22"/>
+                        <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="196" y="20"/></Anchors>
+                    </CheckButton>
+                    <CheckButton parentKey="onlineFilter" inherits="UICheckButtonTemplate">
+                        <Size x="22" y="22"/>
+                        <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="284" y="20"/></Anchors>
+                    </CheckButton>
+
+                    <Button parentKey="hdrRank">
+                        <Size x="24" y="20"/>
+                        <Anchors><Anchor point="TOPLEFT" x="8" y="-1"/></Anchors>
+                        <NormalFont style="GameFontHighlightSmall"/>
+                        <ButtonText text="#" justifyH="LEFT"/>
+                        <Scripts><OnClick>ElitismEPGP_MainFrame:SetSort("pr")</OnClick></Scripts>
+                    </Button>
+                    <Button parentKey="hdrName">
+                        <Size x="116" y="20"/>
+                        <Anchors><Anchor point="TOPLEFT" x="32" y="-1"/></Anchors>
+                        <NormalFont style="GameFontHighlightSmall"/>
+                        <ButtonText text="Name" justifyH="LEFT"/>
+                        <Scripts><OnClick>ElitismEPGP_MainFrame:SetSort("name")</OnClick></Scripts>
+                    </Button>
+                    <Button parentKey="hdrClass">
+                        <Size x="68" y="20"/>
+                        <Anchors><Anchor point="TOPLEFT" x="148" y="-1"/></Anchors>
+                        <NormalFont style="GameFontHighlightSmall"/>
+                        <ButtonText text="Class" justifyH="LEFT"/>
+                        <Scripts><OnClick>ElitismEPGP_MainFrame:SetSort("class")</OnClick></Scripts>
+                    </Button>
+                    <Button parentKey="hdrLevel">
+                        <Size x="28" y="20"/>
+                        <Anchors><Anchor point="TOPLEFT" x="218" y="-1"/></Anchors>
+                        <NormalFont style="GameFontHighlightSmall"/>
+                        <ButtonText text="Lvl" justifyH="RIGHT"/>
+                        <Scripts><OnClick>ElitismEPGP_MainFrame:SetSort("level")</OnClick></Scripts>
+                    </Button>
+                    <Button parentKey="hdrEP">
+                        <Size x="60" y="20"/>
+                        <Anchors><Anchor point="TOPLEFT" x="252" y="-1"/></Anchors>
+                        <NormalFont style="GameFontHighlightSmall"/>
+                        <ButtonText text="EP" justifyH="RIGHT"/>
+                        <Scripts><OnClick>ElitismEPGP_MainFrame:SetSort("ep")</OnClick></Scripts>
+                    </Button>
+                    <Button parentKey="hdrGP">
+                        <Size x="60" y="20"/>
+                        <Anchors><Anchor point="TOPLEFT" x="318" y="-1"/></Anchors>
+                        <NormalFont style="GameFontHighlightSmall"/>
+                        <ButtonText text="GP" justifyH="RIGHT"/>
+                        <Scripts><OnClick>ElitismEPGP_MainFrame:SetSort("gp")</OnClick></Scripts>
+                    </Button>
+                    <Button parentKey="hdrPR">
+                        <Size x="60" y="20"/>
+                        <Anchors><Anchor point="TOPLEFT" x="384" y="-1"/></Anchors>
+                        <NormalFont style="GameFontHighlightSmall"/>
+                        <ButtonText text="PR" justifyH="RIGHT"/>
+                        <Scripts><OnClick>ElitismEPGP_MainFrame:SetSort("pr")</OnClick></Scripts>
+                    </Button>
+
+                    <ScrollFrame parentKey="scroll" inherits="FauxScrollFrameTemplate">
+                        <Size x="444" y="396"/>
+                        <Anchors><Anchor point="TOPLEFT" x="2" y="-28"/></Anchors>
+                        <Scripts>
+                            <OnVerticalScroll>
+                                FauxScrollFrame_OnVerticalScroll(self, offset, 18, function() ElitismEPGP_StandingsTab:Refresh() end)
+                            </OnVerticalScroll>
+                        </Scripts>
+                    </ScrollFrame>
+
+                </Frames>
+            </Frame>
+
+            <Frame name="ElitismEPGPHistoryTab" hidden="true">
+                <Size x="468" y="430"/>
+                <Anchors><Anchor point="TOPLEFT" x="16" y="-40"/></Anchors>
+
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <!-- Search/filter row sits ABOVE the tab frame top, in the
+                             gap between the tab buttons and the tab content. Same
+                             y=22 placement as the other tabs so controls visually
+                             align across tab switches. -->
+                        <FontString parentKey="searchLabel" inherits="GameFontNormalSmall" text="Search:" justifyH="LEFT">
+                            <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="6" y="20"/></Anchors>
+                        </FontString>
+                        <FontString parentKey="kindEPLabel" inherits="GameFontNormalSmall" text="EP" justifyH="LEFT">
+                            <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="222" y="20"/></Anchors>
+                        </FontString>
+                        <FontString parentKey="kindGPLabel" inherits="GameFontNormalSmall" text="GP" justifyH="LEFT">
+                            <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="272" y="20"/></Anchors>
+                        </FontString>
+                        <FontString parentKey="kindDecayLabel" inherits="GameFontNormalSmall" text="Decay" justifyH="LEFT">
+                            <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="322" y="20"/></Anchors>
+                        </FontString>
+                        <FontString parentKey="memberViewLabel" inherits="GameFontNormalSmall" text="Member" justifyH="LEFT">
+                            <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="390" y="20"/></Anchors>
+                        </FontString>
+
+                        <FontString parentKey="hdrActor" inherits="GameFontHighlightSmall" text="By" justifyH="LEFT">
+                            <Size x="80" y="18"/>
+                            <Anchors><Anchor point="TOPLEFT" x="82" y="-1"/></Anchors>
+                        </FontString>
+                        <FontString parentKey="hdrTarget" inherits="GameFontHighlightSmall" text="Player" justifyH="LEFT">
+                            <Size x="90" y="18"/>
+                            <Anchors><Anchor point="TOPLEFT" x="157" y="-1"/></Anchors>
+                        </FontString>
+                        <FontString parentKey="hdrDelta" inherits="GameFontHighlightSmall" text="Points" justifyH="RIGHT">
+                            <Size x="64" y="18"/>
+                            <Anchors><Anchor point="TOPLEFT" x="249" y="-1"/></Anchors>
+                        </FontString>
+                        <FontString parentKey="hdrReason" inherits="GameFontHighlightSmall" text="Reason" justifyH="LEFT">
+                            <Size x="124" y="18"/>
+                            <Anchors><Anchor point="TOPLEFT" x="322" y="-1"/></Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+
+                <Frames>
+                    <Button parentKey="hdrTime">
+                        <Size x="76" y="18"/>
+                        <Anchors><Anchor point="TOPLEFT" x="6" y="-1"/></Anchors>
+                        <NormalFont style="GameFontHighlightSmall"/>
+                        <ButtonText text="When" justifyH="LEFT"/>
+                        <Scripts><OnClick>if ElitismEPGP_HistoryTab and ElitismEPGP_HistoryTab.SetSort then ElitismEPGP_HistoryTab:SetSort("time") end</OnClick></Scripts>
+                    </Button>
+
+                    <!-- memberView sits in the filter row alongside the EP/GP/
+                         Decay kind toggles, just to the right of "Decay". -->
+                    <CheckButton parentKey="memberView" inherits="UICheckButtonTemplate">
+                        <Size x="22" y="22"/>
+                        <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="364" y="20"/></Anchors>
+                    </CheckButton>
+
+                    <EditBox parentKey="targetFilter" letters="32" autoFocus="false">
+                        <Size x="130" y="20"/>
+                        <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="50" y="20"/></Anchors>
+                        <FontString inherits="ChatFontNormal"/>
+                        <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground"
+                                  edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                            <BackgroundInsets><AbsInset left="3" right="3" top="3" bottom="3"/></BackgroundInsets>
+                            <TileSize><AbsValue val="16"/></TileSize>
+                            <EdgeSize><AbsValue val="12"/></EdgeSize>
+                            <Color r="0" g="0" b="0" a="0.6"/>
+                        </Backdrop>
+                        <Scripts>
+                            <OnEscapePressed>self:ClearFocus()</OnEscapePressed>
+                            <OnEnterPressed>self:ClearFocus()</OnEnterPressed>
+                        </Scripts>
+                    </EditBox>
+
+                    <CheckButton parentKey="kindEP" inherits="UICheckButtonTemplate">
+                        <Size x="22" y="22"/>
+                        <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="196" y="20"/></Anchors>
+                    </CheckButton>
+                    <CheckButton parentKey="kindGP" inherits="UICheckButtonTemplate">
+                        <Size x="22" y="22"/>
+                        <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="246" y="20"/></Anchors>
+                    </CheckButton>
+                    <CheckButton parentKey="kindDecay" inherits="UICheckButtonTemplate">
+                        <Size x="22" y="22"/>
+                        <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="296" y="20"/></Anchors>
+                    </CheckButton>
+
+                    <ScrollFrame parentKey="scroll" inherits="FauxScrollFrameTemplate">
+                        <Size x="444" y="396"/>
+                        <Anchors><Anchor point="TOPLEFT" x="2" y="-28"/></Anchors>
+                        <Scripts>
+                            <OnVerticalScroll>
+                                FauxScrollFrame_OnVerticalScroll(self, offset, 18, function() ElitismEPGP_HistoryTab:Refresh() end)
+                            </OnVerticalScroll>
+                        </Scripts>
+                    </ScrollFrame>
+                </Frames>
+            </Frame>
+
+            <Frame name="ElitismEPGPPricesTab" hidden="true">
+                <Size x="468" y="430"/>
+                <Anchors><Anchor point="TOPLEFT" x="16" y="-40"/></Anchors>
+
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <!-- Search row sits ABOVE the tab frame top, matching the
+                             Standings/History tabs so the input stays put when
+                             switching tabs. Filters the override list only. -->
+                        <FontString parentKey="searchLabel" inherits="GameFontNormalSmall" text="Search:" justifyH="LEFT">
+                            <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="6" y="20"/></Anchors>
+                        </FontString>
+
+                        <FontString parentKey="hdrName" inherits="GameFontHighlightSmall" text="Item" justifyH="LEFT">
+                            <Size x="220" y="14"/>
+                            <Anchors><Anchor point="TOPLEFT" x="32" y="-5"/></Anchors>
+                        </FontString>
+                        <FontString parentKey="hdrMode" inherits="GameFontHighlightSmall" text="Mode" justifyH="LEFT">
+                            <Size x="60" y="14"/>
+                            <Anchors><Anchor point="TOPLEFT" x="252" y="-5"/></Anchors>
+                        </FontString>
+                        <FontString parentKey="hdrValue" inherits="GameFontHighlightSmall" text="Value" justifyH="RIGHT">
+                            <Size x="100" y="14"/>
+                            <Anchors><Anchor point="TOPLEFT" x="316" y="-5"/></Anchors>
+                        </FontString>
+
+                        <FontString parentKey="emptyText" inherits="GameFontDisableSmall" justifyH="CENTER" text="No overrides yet — click Add Override to add one." hidden="true">
+                            <Size x="400" y="14"/>
+                            <Anchors><Anchor point="TOP" x="0" y="-60"/></Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+
+                <Frames>
+                    <EditBox parentKey="searchFilter" letters="32" autoFocus="false">
+                        <Size x="130" y="20"/>
+                        <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="50" y="20"/></Anchors>
+                        <FontString inherits="ChatFontNormal"/>
+                        <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground"
+                                  edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                            <BackgroundInsets><AbsInset left="3" right="3" top="3" bottom="3"/></BackgroundInsets>
+                            <TileSize><AbsValue val="16"/></TileSize>
+                            <EdgeSize><AbsValue val="12"/></EdgeSize>
+                            <Color r="0" g="0" b="0" a="0.6"/>
+                        </Backdrop>
+                        <Scripts>
+                            <OnEscapePressed>self:ClearFocus()</OnEscapePressed>
+                            <OnEnterPressed>self:ClearFocus()</OnEnterPressed>
+                        </Scripts>
+                    </EditBox>
+
+                    <Button parentKey="addOverrideBtn" inherits="UIPanelButtonTemplate" text="Add Override">
+                        <Size x="100" y="20"/>
+                        <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="190" y="20"/></Anchors>
+                    </Button>
+
+                    <ScrollFrame parentKey="scroll" inherits="FauxScrollFrameTemplate">
+                        <Size x="444" y="396"/>
+                        <Anchors><Anchor point="TOPLEFT" x="2" y="-28"/></Anchors>
+                        <Scripts>
+                            <OnVerticalScroll>
+                                FauxScrollFrame_OnVerticalScroll(self, offset, 20, function() if ElitismEPGP_PricesTab then ElitismEPGP_PricesTab:Refresh() end end)
+                            </OnVerticalScroll>
+                        </Scripts>
+                    </ScrollFrame>
+                </Frames>
+            </Frame>
+        </Frames>
+
+        <Scripts>
+            <OnMouseDown>if button == "LeftButton" then self:StartMoving() end</OnMouseDown>
+            <OnMouseUp>self:StopMovingOrSizing()</OnMouseUp>
+            <OnShow>if ElitismEPGP_MainFrame and ElitismEPGP_MainFrame.Reload then ElitismEPGP_MainFrame:Reload() end</OnShow>
+            <OnHide>
+                if ElitismEPGPHistoryDetailFrame then ElitismEPGPHistoryDetailFrame:Hide() end
+                if ElitismEPGPPriceOverrideFrame then ElitismEPGPPriceOverrideFrame:Hide() end
+                if ElitismEPGPPlayerDetailFrame then ElitismEPGPPlayerDetailFrame:Hide() end
+            </OnHide>
+        </Scripts>
+    </Frame>
+
+    <Frame name="ElitismEPGPRaidManagerFrame" parent="UIParent" enableMouse="true" movable="true" hidden="true" frameStrata="MEDIUM">
+        <Size x="163" y="186"/>
+        <Anchors><Anchor point="CENTER" x="200" y="0"/></Anchors>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="title" inherits="GameFontNormal" text="Select raid setup">
+                    <Anchors><Anchor point="TOPLEFT" x="13" y="-13"/></Anchors>
+                </FontString>
+                <FontString parentKey="subtitle" inherits="GameFontHighlightSmall" justifyH="LEFT" hidden="true">
+                    <Anchors><Anchor point="TOPLEFT" x="13" y="-51"/></Anchors>
+                </FontString>
+                <Texture parentKey="modeCheck" file="Interface\RAIDFRAME\ReadyCheck-Ready">
+                    <Size x="10" y="10"/>
+                    <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="10" y="-172"/></Anchors>
+                </Texture>
+                <FontString parentKey="modeLabel" inherits="GameFontDisableSmall" justifyH="LEFT">
+                    <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="30" y="-172"/></Anchors>
+                </FontString>
+                <FontString parentKey="modeOption" inherits="GameFontHighlightSmall" justifyH="RIGHT">
+                    <Anchors><Anchor point="RIGHT" relativePoint="TOPRIGHT" x="-32" y="-172"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Button parentKey="closeButton" inherits="UIPanelCloseButton">
+                <Anchors><Anchor point="TOPLEFT" x="137" y="5"/></Anchors>
+            </Button>
+
+            <Button parentKey="btnRaidPicker" inherits="UIPanelButtonTemplate" text="Raid">
+                <Size x="134" y="22"/>
+                <Anchors><Anchor point="TOPLEFT" x="9" y="-50"/></Anchors>
+            </Button>
+            <Button parentKey="btnDifficultyPicker" inherits="UIPanelButtonTemplate" text="Difficulty">
+                <Size x="134" y="22"/>
+                <Anchors><Anchor point="TOPLEFT" x="9" y="-76"/></Anchors>
+            </Button>
+            <Button parentKey="btnRaidSession" inherits="UIPanelButtonTemplate" text="Start Raid">
+                <Size x="140" y="26"/>
+                <Anchors><Anchor point="TOPLEFT" x="10" y="-111"/></Anchors>
+            </Button>
+            <!-- Circle action buttons (Award / Players / Logs) — laid out in
+                 a row between the difficulty area and the Start/End Raid
+                 button. 56×56 quads overlap by ~4px since the bg circle
+                 art is smaller than the texture quad (transparent padding
+                 around the visible circle). Centered on the 163-wide
+                 frame: x=2, 54, 106 → row spans 2..162. Skinning + click
+                 wiring lives in RaidManager.lua. -->
+            <Button parentKey="btnAward">
+                <Size x="56" y="56"/>
+                <Anchors><Anchor point="TOPLEFT" x="2" y="-69"/></Anchors>
+            </Button>
+            <Button parentKey="raidInfoButton">
+                <Size x="56" y="56"/>
+                <Anchors><Anchor point="TOPLEFT" x="53.5" y="-69"/></Anchors>
+            </Button>
+            <Button parentKey="btnLogs">
+                <Size x="56" y="56"/>
+                <Anchors><Anchor point="TOPLEFT" x="105" y="-69"/></Anchors>
+            </Button>
+            <Button parentKey="btnBidShow" inherits="UIPanelButtonTemplate" text="Hide Bids" hidden="true">
+                <Size x="140" y="26"/>
+                <Anchors><Anchor point="TOPLEFT" x="15" y="-234"/></Anchors>
+            </Button>
+
+            <Button parentKey="cogButton">
+                <Size x="20" y="20"/>
+                <Anchors><Anchor point="RIGHT" relativePoint="TOPRIGHT" x="-10" y="-172"/></Anchors>
+            </Button>
+        </Frames>
+
+        <Scripts>
+            <OnMouseDown>if button == "LeftButton" then self:StartMoving() end</OnMouseDown>
+            <OnMouseUp>self:StopMovingOrSizing(); if ElitismEPGP_RaidManager and ElitismEPGP_RaidManager.SavePos then ElitismEPGP_RaidManager:SavePos() end</OnMouseUp>
+            <OnHide>
+                if ElitismEPGPRaidManagerSettingsFrame then ElitismEPGPRaidManagerSettingsFrame:Hide() end
+                if ElitismEPGPRaidInfoFrame then ElitismEPGPRaidInfoFrame:Hide() end
+                if ElitismEPGPSessionLogsFrame then ElitismEPGPSessionLogsFrame:Hide() end
+                if ElitismEPGPRaidManagerBannerFrame then ElitismEPGPRaidManagerBannerFrame:Hide() end
+                if ElitismEPGPCustomAwardFrame then ElitismEPGPCustomAwardFrame:Hide() end
+            </OnHide>
+        </Scripts>
+    </Frame>
+
+    <Frame name="ElitismEPGPRaidManagerBannerFrame" parent="ElitismEPGPRaidManagerFrame" enableMouse="true" hidden="true" frameStrata="MEDIUM">
+        <!-- Width matches the Raid Manager's expanded width (163); height is
+             overridden in ShowBanner. Anchored BOTTOM→TOP (centers), so it
+             stays horizontally centered on the Raid Manager whether the RM is
+             expanded (163w) or collapsed (102w). -->
+        <Size x="163" y="56"/>
+        <Anchors>
+            <Anchor point="BOTTOM" relativeTo="ElitismEPGPRaidManagerFrame" relativePoint="TOP" x="0" y="4"/>
+        </Anchors>
+
+        <!-- Background fill; ApplySimpleMetalBorder (in WireBannerFrame)
+             strips this to a no-inset bgFile-only backdrop and drives its
+             opacity off the profile's bgOpacity slider, then lays the
+             SimpleMetal 9-slice trim over the top — same as the Raid Manager. -->
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark" tile="true">
+            <BackgroundInsets><AbsInset left="6" right="6" top="6" bottom="6"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="text" inherits="GameFontHighlightSmall" justifyH="CENTER">
+                    <Size x="150" y="14"/>
+                    <Anchors><Anchor point="TOP" x="0" y="-7"/></Anchors>
+                </FontString>
+                <!-- Auto-award mode shows this in place of the Award/Cancel
+                     buttons (same vertical band): "+N EP awarded to N players". -->
+                <FontString parentKey="awardLine" inherits="GameFontHighlightSmall" justifyH="CENTER" hidden="true">
+                    <Size x="150" y="20"/>
+                    <Anchors><Anchor point="TOP" x="0" y="-26"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Button parentKey="bannerAccept" inherits="UIPanelButtonTemplate" text="Award">
+                <Size x="70" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="11" y="-26"/></Anchors>
+            </Button>
+            <Button parentKey="bannerDismiss" inherits="UIPanelButtonTemplate" text="Cancel">
+                <Size x="70" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="83" y="-26"/></Anchors>
+            </Button>
+        </Frames>
+    </Frame>
+
+    <!-- DIALOG strata + movable: this is a modal, so it floats above every
+         MEDIUM-strata Raid Manager frame (main panel, banner, settings,
+         side panels) and can be dragged out of the way. -->
+    <Frame name="ElitismEPGPCustomAwardFrame" parent="UIParent" enableMouse="true" movable="true" clampedToScreen="true" hidden="true" frameStrata="FULLSCREEN_DIALOG">
+        <Size x="340" y="190"/>
+        <!-- Same spot as the stock confirmation popups (StaticPopup1's top). -->
+        <Anchors><Anchor point="TOP" relativeTo="StaticPopup1" relativePoint="TOP"/></Anchors>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="title" inherits="GameFontNormalLarge" text="Custom Award">
+                    <Anchors><Anchor point="TOP" x="0" y="-14"/></Anchors>
+                </FontString>
+                <FontString parentKey="amountLabel" inherits="GameFontNormalSmall" text="Amount (signed, e.g. +10 or -5):" justifyH="LEFT">
+                    <Anchors><Anchor point="TOPLEFT" x="20" y="-42"/></Anchors>
+                </FontString>
+                <FontString parentKey="noteLabel" inherits="GameFontNormalSmall" text="Note (optional):" justifyH="LEFT">
+                    <Anchors><Anchor point="TOPLEFT" x="20" y="-92"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <!-- Pokes 6px past the right edge / 5px above the top so it
+                 nests inside the SimpleMetal corner pocket (see RaidManager). -->
+            <Button parentKey="closeButton" inherits="UIPanelCloseButton">
+                <Anchors><Anchor point="TOPRIGHT" x="6" y="5"/></Anchors>
+            </Button>
+
+            <EditBox parentKey="amountEdit" letters="6" autoFocus="false">
+                <Size x="120" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="20" y="-60"/></Anchors>
+                <FontString inherits="ChatFontNormal"/>
+                <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground"
+                          edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <BackgroundInsets><AbsInset left="3" right="3" top="3" bottom="3"/></BackgroundInsets>
+                    <TileSize><AbsValue val="16"/></TileSize>
+                    <EdgeSize><AbsValue val="12"/></EdgeSize>
+                    <Color r="0" g="0" b="0" a="0.6"/>
+                </Backdrop>
+                <Scripts>
+                    <OnEscapePressed>ElitismEPGPCustomAwardFrame:Hide()</OnEscapePressed>
+                </Scripts>
+            </EditBox>
+
+            <EditBox parentKey="noteEdit" letters="100" autoFocus="false">
+                <Size x="300" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="20" y="-110"/></Anchors>
+                <FontString inherits="ChatFontNormal"/>
+                <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground"
+                          edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <BackgroundInsets><AbsInset left="3" right="3" top="3" bottom="3"/></BackgroundInsets>
+                    <TileSize><AbsValue val="16"/></TileSize>
+                    <EdgeSize><AbsValue val="12"/></EdgeSize>
+                    <Color r="0" g="0" b="0" a="0.6"/>
+                </Backdrop>
+                <Scripts>
+                    <OnEscapePressed>ElitismEPGPCustomAwardFrame:Hide()</OnEscapePressed>
+                </Scripts>
+            </EditBox>
+
+            <Button parentKey="btnEP" inherits="UIPanelButtonTemplate" text="Award EP">
+                <Size x="90" y="22"/>
+                <Anchors><Anchor point="BOTTOMLEFT" x="20" y="14"/></Anchors>
+            </Button>
+            <Button parentKey="btnGP" inherits="UIPanelButtonTemplate" text="Award GP">
+                <Size x="90" y="22"/>
+                <Anchors><Anchor point="BOTTOMLEFT" x="116" y="14"/></Anchors>
+            </Button>
+            <Button parentKey="btnCancel" inherits="UIPanelButtonTemplate" text="Cancel">
+                <Size x="90" y="22"/>
+                <Anchors><Anchor point="BOTTOMRIGHT" x="-20" y="14"/></Anchors>
+            </Button>
+        </Frames>
+
+        <Scripts>
+            <!-- Re-pin to the stock confirmation-popup spot every time it
+                 opens (a prior drag replaces the anchor with a screen one). -->
+            <OnShow>self:ClearAllPoints(); if StaticPopup1 then self:SetPoint("TOP", StaticPopup1, "TOP", 0, 0) else self:SetPoint("TOP", UIParent, "TOP", 0, -135) end</OnShow>
+            <OnMouseDown>if button == "LeftButton" then self:StartMoving() end</OnMouseDown>
+            <OnMouseUp>self:StopMovingOrSizing()</OnMouseUp>
+        </Scripts>
+    </Frame>
+
+    <Frame name="ElitismEPGPRaidManagerSettingsFrame" parent="ElitismEPGPRaidManagerFrame" enableMouse="true" hidden="true" frameStrata="MEDIUM">
+        <Size x="130" y="104"/>
+        <Anchors>
+            <Anchor point="TOPRIGHT" relativeTo="ElitismEPGPRaidManagerFrame" relativePoint="TOPRIGHT" x="-10" y="-194"/>
+        </Anchors>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+            <BackgroundInsets><AbsInset left="4" right="4" top="4" bottom="4"/></BackgroundInsets>
+            <TileSize><AbsValue val="16"/></TileSize>
+            <EdgeSize><AbsValue val="14"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="title" inherits="GameFontNormalSmall" text="Boss Award Mode" justifyH="LEFT">
+                    <Anchors><Anchor point="TOPLEFT" x="10" y="-10"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <CheckButton parentKey="radioManual" inherits="UIRadioButtonTemplate">
+                <Anchors><Anchor point="TOPLEFT" x="10" y="-31.5"/></Anchors>
+            </CheckButton>
+            <Frame parentKey="radioManualLabel">
+                <Size x="80" y="16"/>
+                <Anchors><Anchor point="LEFT" relativeTo="ElitismEPGPRaidManagerSettingsFrame" relativePoint="TOPLEFT" x="30" y="-39"/></Anchors>
+                <Layers><Layer level="OVERLAY"><FontString inherits="GameFontHighlightSmall" justifyH="LEFT" text="Manual"><Anchors><Anchor point="LEFT"/></Anchors></FontString></Layer></Layers>
+            </Frame>
+            <CheckButton parentKey="radioQuick" inherits="UIRadioButtonTemplate">
+                <Anchors><Anchor point="TOPLEFT" x="10" y="-55.5"/></Anchors>
+            </CheckButton>
+            <Frame parentKey="radioQuickLabel">
+                <Size x="80" y="16"/>
+                <Anchors><Anchor point="LEFT" relativeTo="ElitismEPGPRaidManagerSettingsFrame" relativePoint="TOPLEFT" x="30" y="-63"/></Anchors>
+                <Layers><Layer level="OVERLAY"><FontString inherits="GameFontHighlightSmall" justifyH="LEFT" text="Suggest"><Anchors><Anchor point="LEFT"/></Anchors></FontString></Layer></Layers>
+            </Frame>
+            <CheckButton parentKey="radioAuto" inherits="UIRadioButtonTemplate">
+                <Anchors><Anchor point="TOPLEFT" x="10" y="-79.5"/></Anchors>
+            </CheckButton>
+            <Frame parentKey="radioAutoLabel">
+                <Size x="80" y="16"/>
+                <Anchors><Anchor point="LEFT" relativeTo="ElitismEPGPRaidManagerSettingsFrame" relativePoint="TOPLEFT" x="30" y="-87"/></Anchors>
+                <Layers><Layer level="OVERLAY"><FontString inherits="GameFontHighlightSmall" justifyH="LEFT" text="Auto"><Anchors><Anchor point="LEFT"/></Anchors></FontString></Layer></Layers>
+            </Frame>
+        </Frames>
+    </Frame>
+
+    <Frame name="ElitismEPGPRaidInfoFrame" parent="UIParent" enableMouse="true" hidden="true" frameStrata="MEDIUM">
+        <Size x="240" y="320"/>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="title" inherits="GameFontNormalLarge" text="Players" justifyH="LEFT">
+                    <Anchors><Anchor point="TOPLEFT" x="18" y="-14"/></Anchors>
+                </FontString>
+                <FontString parentKey="summary" inherits="GameFontDisableSmall" justifyH="LEFT">
+                    <Size x="200" y="14"/>
+                    <Anchors><Anchor point="BOTTOMLEFT" x="14" y="14"/></Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="BORDER">
+                <!-- Header strip: edge-to-edge so it tucks under the metal trim. -->
+                <Texture parentKey="hdrBG">
+                    <Size x="0" y="20"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"  x="0" y="-42"/>
+                        <Anchor point="TOPRIGHT" x="0" y="-42"/>
+                    </Anchors>
+                    <Color r="0" g="0" b="0" a="0.4"/>
+                </Texture>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <!-- Pokes 6px past the right edge / 5px above the top so it
+                 nests inside the SimpleMetal corner pocket (see RaidManager). -->
+            <Button parentKey="closeButton" inherits="UIPanelCloseButton">
+                <Anchors><Anchor point="TOPRIGHT" x="6" y="5"/></Anchors>
+            </Button>
+
+            <!-- Search box (top-right): filters the list by player name / class. -->
+            <EditBox parentKey="searchFilter" letters="32" autoFocus="false">
+                <Size x="100" y="20"/>
+                <Anchors><Anchor point="TOPRIGHT" x="-32" y="-12"/></Anchors>
+                <FontString inherits="ChatFontNormal"/>
+                <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground"
+                          edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <BackgroundInsets><AbsInset left="3" right="3" top="3" bottom="3"/></BackgroundInsets>
+                    <TileSize><AbsValue val="16"/></TileSize>
+                    <EdgeSize><AbsValue val="12"/></EdgeSize>
+                    <Color r="0" g="0" b="0" a="0.6"/>
+                </Backdrop>
+                <Scripts>
+                    <OnEscapePressed>self:ClearFocus()</OnEscapePressed>
+                    <OnEnterPressed>self:ClearFocus()</OnEnterPressed>
+                </Scripts>
+            </EditBox>
+
+            <!-- Sortable column headers (same style as the Standings/History tabs). -->
+            <Button parentKey="hdrName">
+                <Size x="110" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="18" y="-42"/></Anchors>
+                <NormalFont style="GameFontHighlightSmall"/>
+                <ButtonText text="Player" justifyH="LEFT"/>
+                <Scripts><OnClick>ElitismEPGP_RaidInfo:SetSort("name")</OnClick></Scripts>
+            </Button>
+            <Button parentKey="hdrClass">
+                <Size x="98" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="138" y="-42"/></Anchors>
+                <NormalFont style="GameFontHighlightSmall"/>
+                <ButtonText text="Class" justifyH="LEFT"/>
+                <Scripts><OnClick>ElitismEPGP_RaidInfo:SetSort("class")</OnClick></Scripts>
+            </Button>
+
+            <!-- Width pulled in 20px from the row width so the Faux scrollbar
+                 (pinned 6px right of this frame's right edge) sits inside the
+                 panel instead of poking under the metal border. -->
+            <ScrollFrame parentKey="scroll" inherits="FauxScrollFrameTemplate">
+                <Size x="192" y="216"/>
+                <Anchors><Anchor point="TOPLEFT" x="14" y="-66"/></Anchors>
+                <Scripts>
+                    <OnVerticalScroll>
+                        FauxScrollFrame_OnVerticalScroll(self, offset, 16, function() if ElitismEPGP_RaidInfo then ElitismEPGP_RaidInfo:Refresh() end end)
+                    </OnVerticalScroll>
+                </Scripts>
+            </ScrollFrame>
+        </Frames>
+    </Frame>
+
+    <Frame name="ElitismEPGP_RaidInfoRowTemplate" virtual="true" enableMouse="true">
+        <Size x="212" y="16"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <!-- Hover highlight: overhangs the row 40px each side so the
+                     search-select atlas's soft caps fade out past the edges. -->
+                <Texture parentKey="bg">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"     x="-40" y="0"/>
+                        <Anchor point="BOTTOMRIGHT" x="40"  y="0"/>
+                    </Anchors>
+                    <Color r="1" g="1" b="1" a="0"/>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="player" inherits="GameFontNormalSmall" justifyH="LEFT">
+                    <Size x="110" y="16"/>
+                    <Anchors><Anchor point="TOPLEFT" x="4" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="class" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="100" y="16"/>
+                    <Anchors><Anchor point="TOPLEFT" x="124" y="0"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Frame name="ElitismEPGP_SessionLogRowTemplate" virtual="true" enableMouse="true">
+        <Size x="292" y="16"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <!-- Hover highlight: overhangs the row 40px each side so the
+                     search-select atlas's soft caps fade out past the edges. -->
+                <Texture parentKey="bg">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"     x="-40" y="0"/>
+                        <Anchor point="BOTTOMRIGHT" x="40"  y="0"/>
+                    </Anchors>
+                    <Color r="1" g="1" b="1" a="0"/>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="time" inherits="GameFontDisableSmall" justifyH="LEFT">
+                    <Size x="44" y="16"/>
+                    <Anchors><Anchor point="TOPLEFT" x="4" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="target" inherits="GameFontNormalSmall" justifyH="LEFT">
+                    <Size x="86" y="16"/>
+                    <Anchors><Anchor point="TOPLEFT" x="50" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="delta" inherits="GameFontHighlightSmall" justifyH="RIGHT">
+                    <Size x="56" y="16"/>
+                    <Anchors><Anchor point="TOPLEFT" x="133" y="0"/></Anchors>
+                </FontString>
+                <FontString parentKey="reason" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="77" y="16"/>
+                    <Anchors><Anchor point="TOPLEFT" x="203" y="0"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Frame name="ElitismEPGPSessionLogsFrame" parent="UIParent" enableMouse="true" hidden="true" frameStrata="MEDIUM">
+        <Size x="320" y="320"/>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="title" inherits="GameFontNormalLarge" text="Session Log" justifyH="LEFT">
+                    <Anchors><Anchor point="TOPLEFT" x="18" y="-14"/></Anchors>
+                </FontString>
+                <FontString parentKey="summary" inherits="GameFontDisableSmall" justifyH="LEFT">
+                    <Size x="190" y="14"/>
+                    <Anchors><Anchor point="BOTTOMLEFT" x="14" y="13"/></Anchors>
+                </FontString>
+                <FontString parentKey="emptyText" inherits="GameFontDisableSmall" justifyH="CENTER" text="No log entries yet for this session." hidden="true">
+                    <Size x="280" y="14"/>
+                    <Anchors><Anchor point="TOP" x="0" y="-90"/></Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="BORDER">
+                <!-- Header strip: edge-to-edge so it tucks under the metal trim. -->
+                <Texture parentKey="hdrBG">
+                    <Size x="0" y="20"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"  x="0" y="-42"/>
+                        <Anchor point="TOPRIGHT" x="0" y="-42"/>
+                    </Anchors>
+                    <Color r="0" g="0" b="0" a="0.4"/>
+                </Texture>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <!-- Pokes 6px past the right edge / 5px above the top so it
+                 nests inside the SimpleMetal corner pocket (see RaidManager). -->
+            <Button parentKey="closeButton" inherits="UIPanelCloseButton">
+                <Anchors><Anchor point="TOPRIGHT" x="6" y="5"/></Anchors>
+            </Button>
+
+            <!-- Search box (top-right): filters the log by player name / reason. -->
+            <EditBox parentKey="searchFilter" letters="32" autoFocus="false">
+                <Size x="110" y="20"/>
+                <Anchors><Anchor point="TOPRIGHT" x="-32" y="-12"/></Anchors>
+                <FontString inherits="ChatFontNormal"/>
+                <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground"
+                          edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <BackgroundInsets><AbsInset left="3" right="3" top="3" bottom="3"/></BackgroundInsets>
+                    <TileSize><AbsValue val="16"/></TileSize>
+                    <EdgeSize><AbsValue val="12"/></EdgeSize>
+                    <Color r="0" g="0" b="0" a="0.6"/>
+                </Backdrop>
+                <Scripts>
+                    <OnEscapePressed>self:ClearFocus()</OnEscapePressed>
+                    <OnEnterPressed>self:ClearFocus()</OnEnterPressed>
+                </Scripts>
+            </EditBox>
+
+            <!-- Sortable column headers (same style as the Standings/History tabs). -->
+            <Button parentKey="hdrTime">
+                <Size x="44" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="18" y="-42"/></Anchors>
+                <NormalFont style="GameFontHighlightSmall"/>
+                <ButtonText text="Time" justifyH="LEFT"/>
+                <Scripts><OnClick>ElitismEPGP_SessionLogs:SetSort("time")</OnClick></Scripts>
+            </Button>
+            <Button parentKey="hdrTarget">
+                <Size x="86" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="64" y="-42"/></Anchors>
+                <NormalFont style="GameFontHighlightSmall"/>
+                <ButtonText text="Player" justifyH="LEFT"/>
+                <Scripts><OnClick>ElitismEPGP_SessionLogs:SetSort("target")</OnClick></Scripts>
+            </Button>
+            <Button parentKey="hdrDelta">
+                <Size x="56" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="147" y="-42"/></Anchors>
+                <NormalFont style="GameFontHighlightSmall"/>
+                <ButtonText text="Player" justifyH="RIGHT"/>
+                <Scripts><OnClick>ElitismEPGP_SessionLogs:SetSort("delta")</OnClick></Scripts>
+            </Button>
+            <Button parentKey="hdrReason">
+                <Size x="77" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="217" y="-42"/></Anchors>
+                <NormalFont style="GameFontHighlightSmall"/>
+                <ButtonText text="Reason" justifyH="LEFT"/>
+                <Scripts><OnClick>ElitismEPGP_SessionLogs:SetSort("reason")</OnClick></Scripts>
+            </Button>
+
+            <!-- Width pulled in 20px from the row width so the Faux scrollbar
+                 (pinned 6px right of this frame's right edge) sits inside the
+                 panel instead of poking under the metal border. -->
+            <ScrollFrame parentKey="scroll" inherits="FauxScrollFrameTemplate">
+                <Size x="272" y="216"/>
+                <Anchors><Anchor point="TOPLEFT" x="14" y="-66"/></Anchors>
+                <Scripts>
+                    <OnVerticalScroll>
+                        FauxScrollFrame_OnVerticalScroll(self, offset, 16, function() if ElitismEPGP_SessionLogs then ElitismEPGP_SessionLogs:Refresh() end end)
+                    </OnVerticalScroll>
+                </Scripts>
+            </ScrollFrame>
+        </Frames>
+
+        <Scripts>
+            <!-- Hiding the log (close, swap to Players, RM close, …) takes the
+                 detail popup with it. -->
+            <OnHide>if ElitismEPGPSessionLogDetailFrame then ElitismEPGPSessionLogDetailFrame:Hide() end</OnHide>
+        </Scripts>
+    </Frame>
+
+    <!-- Per-group breakdown for a Session Log row (mirrors the History detail
+         popup). Positioned in Lua beside the Session Log on the same side the
+         log sits relative to the Raid Manager. Uses ElitismEPGP_DetailRowTemplate. -->
+    <Frame name="ElitismEPGPSessionLogDetailFrame" parent="UIParent" enableMouse="true" hidden="true" frameStrata="MEDIUM">
+        <Size x="360" y="320"/>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="title" inherits="GameFontNormal" justifyH="LEFT">
+                    <Size x="260" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="18" y="-14"/></Anchors>
+                </FontString>
+                <FontString parentKey="metaLine" inherits="GameFontDisableSmall" justifyH="LEFT">
+                    <Size x="300" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="18" y="-34"/></Anchors>
+                </FontString>
+                <FontString parentKey="hdrPlayer" inherits="GameFontHighlightSmall" text="Player" justifyH="LEFT">
+                    <Size x="140" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="18" y="-56"/></Anchors>
+                </FontString>
+                <FontString parentKey="hdrDelta" inherits="GameFontHighlightSmall" text="Delta" justifyH="RIGHT">
+                    <Size x="64" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="155" y="-56"/></Anchors>
+                </FontString>
+                <FontString parentKey="hdrChange" inherits="GameFontHighlightSmall" text="Before -> After" justifyH="LEFT">
+                    <Size x="94" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="226" y="-56"/></Anchors>
+                </FontString>
+                <FontString parentKey="emptyText" inherits="GameFontDisableSmall" justifyH="CENTER" hidden="true">
+                    <Size x="300" y="14"/>
+                    <Anchors><Anchor point="TOP" x="0" y="-110"/></Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="BORDER">
+                <Texture parentKey="hdrBG">
+                    <Size x="0" y="20"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"  x="0" y="-54"/>
+                        <Anchor point="TOPRIGHT" x="0" y="-54"/>
+                    </Anchors>
+                    <Color r="0" g="0" b="0" a="0.4"/>
+                </Texture>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Button parentKey="closeButton" inherits="UIPanelCloseButton">
+                <Anchors><Anchor point="TOPRIGHT" x="6" y="5"/></Anchors>
+            </Button>
+
+            <ScrollFrame parentKey="scroll" inherits="FauxScrollFrameTemplate">
+                <Size x="310" y="232"/>
+                <Anchors><Anchor point="TOPLEFT" x="14" y="-78"/></Anchors>
+                <Scripts>
+                    <OnVerticalScroll>
+                        FauxScrollFrame_OnVerticalScroll(self, offset, 18, function() if ElitismEPGP_SessionLogDetail then ElitismEPGP_SessionLogDetail:Refresh() end end)
+                    </OnVerticalScroll>
+                </Scripts>
+            </ScrollFrame>
+        </Frames>
+    </Frame>
+
+    <Frame name="ElitismEPGPHistoryDetailFrame" parent="UIParent" enableMouse="true" hidden="true" frameStrata="MEDIUM">
+        <Size x="380" y="500"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="ElitismEPGPMainFrame" relativePoint="TOPRIGHT" x="4" y="0"/>
+        </Anchors>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="kindLabel" inherits="GameFontNormalLarge" justifyH="LEFT">
+                    <Size x="340" y="20"/>
+                    <Anchors><Anchor point="TOPLEFT" x="28" y="-44"/></Anchors>
+                </FontString>
+                <FontString parentKey="metaLine" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="340" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="28" y="-66"/></Anchors>
+                </FontString>
+                <FontString parentKey="reasonLabel" inherits="GameFontDisableSmall" text="Reason:" justifyH="LEFT">
+                    <Size x="50" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="28" y="-96"/></Anchors>
+                </FontString>
+                <FontString parentKey="reasonText" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="340" y="40"/>
+                    <Anchors><Anchor point="TOPLEFT" x="28" y="-99"/></Anchors>
+                </FontString>
+                <FontString parentKey="hdrPlayer" inherits="GameFontHighlightSmall" text="Player" justifyH="LEFT">
+                    <Size x="140" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="28" y="-150"/></Anchors>
+                </FontString>
+                <FontString parentKey="hdrDelta" inherits="GameFontHighlightSmall" text="Points" justifyH="RIGHT">
+                    <Size x="64" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="165" y="-150"/></Anchors>
+                </FontString>
+                <FontString parentKey="hdrChange" inherits="GameFontHighlightSmall" text="Before -> After" justifyH="LEFT">
+                    <Size x="94" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="236" y="-150"/></Anchors>
+                </FontString>
+                <FontString parentKey="emptyText" inherits="GameFontDisableSmall" justifyH="CENTER" hidden="true">
+                    <Size x="340" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="20" y="-220"/></Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="hdrBG">
+                    <Size x="370" y="20"/>
+                    <Anchors><Anchor point="TOPLEFT" x="5" y="-148"/></Anchors>
+                    <Color r="0" g="0" b="0" a="0.4"/>
+                </Texture>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Button parentKey="closeButton" inherits="UIPanelCloseButton">
+                <Size x="30" y="30"/>
+                <Anchors><Anchor point="TOPRIGHT" x="-9" y="-19"/></Anchors>
+            </Button>
+
+            <!-- Invisible mouse-catcher over the kindLabel + metaLine + reason
+                 block. Wired in Lua to show the item GameTooltip when the
+                 entry's note carries an item link. -->
+            <Frame parentKey="itemHover" enableMouse="true">
+                <Size x="340" y="100"/>
+                <Anchors><Anchor point="TOPLEFT" x="20" y="-40"/></Anchors>
+            </Frame>
+
+            <ScrollFrame name="$parentScroll" parentKey="scroll" inherits="FauxScrollFrameTemplate">
+                <Size x="310" y="320"/>
+                <Anchors><Anchor point="TOPLEFT" x="24" y="-172"/></Anchors>
+                <Scripts>
+                    <OnVerticalScroll>
+                        FauxScrollFrame_OnVerticalScroll(self, offset, 18, function() if ElitismEPGP_HistoryDetailFrame then ElitismEPGP_HistoryDetailFrame:Refresh() end end)
+                    </OnVerticalScroll>
+                </Scripts>
+            </ScrollFrame>
+        </Frames>
+    </Frame>
+
+    <!-- Add Price Override popup. Opens to the right of the main window
+         (same anchor pattern as the History Detail frame) and hosts the
+         item-link / Direct GP / Set Linked form that used to clutter the
+         top of the Prices tab. -->
+    <!-- Add Price Override popup. Three stacked rows: the source item, then
+         either a flat GP override or a "treat-as" link to another item's ID.
+         Labels + inputs share a fixed column grid (label x=20 w=100, input
+         x=126) so the rows line up cleanly. All three inputs accept dragged
+         item links via OnReceiveDrag wired in Lua. -->
+    <Frame name="ElitismEPGPPriceOverrideFrame" parent="UIParent" enableMouse="true" hidden="true" frameStrata="MEDIUM">
+        <Size x="380" y="240"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="ElitismEPGPMainFrame" relativePoint="TOPRIGHT" x="4" y="0"/>
+        </Anchors>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="title" inherits="GameFontNormalLarge" text="Add Price Override">
+                    <Anchors><Anchor point="TOP" x="0" y="-14"/></Anchors>
+                </FontString>
+                <FontString parentKey="hint" inherits="GameFontDisableSmall" justifyH="LEFT">
+                    <Size x="340" y="28"/>
+                    <Anchors><Anchor point="TOPLEFT" x="20" y="-42"/></Anchors>
+                </FontString>
+
+                <!-- Row 1: source item input. Drag-shift / paste a link / itemID. -->
+                <FontString parentKey="lblItem" inherits="GameFontHighlightSmall" text="Item:" justifyH="LEFT">
+                    <Size x="100" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="20" y="-86"/></Anchors>
+                </FontString>
+                <!-- Preview line below row 1: live-resolved item link + ilvl. -->
+                <FontString parentKey="itemPreview" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="334" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="20" y="-114"/></Anchors>
+                </FontString>
+
+                <!-- Row 2: flat GP override. -->
+                <FontString parentKey="lblGP" inherits="GameFontHighlightSmall" text="Direct GP:" justifyH="LEFT">
+                    <Size x="100" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="20" y="-140"/></Anchors>
+                </FontString>
+
+                <!-- Row 3: link to another itemID (treat-as fallback). -->
+                <FontString parentKey="lblLink" inherits="GameFontHighlightSmall" text="Or link to itemID:" justifyH="LEFT">
+                    <Size x="100" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="20" y="-166"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Button parentKey="closeButton" inherits="UIPanelCloseButton">
+                <Size x="30" y="30"/>
+                <Anchors><Anchor point="TOPRIGHT" x="-9" y="-19"/></Anchors>
+            </Button>
+
+            <EditBox parentKey="itemEntry" letters="200" autoFocus="false">
+                <Size x="234" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="126" y="-84"/></Anchors>
+                <FontString inherits="ChatFontNormal"/>
+                <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground"
+                          edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <BackgroundInsets><AbsInset left="3" right="3" top="3" bottom="3"/></BackgroundInsets>
+                    <TileSize><AbsValue val="16"/></TileSize>
+                    <EdgeSize><AbsValue val="12"/></EdgeSize>
+                    <Color r="0" g="0" b="0" a="0.6"/>
+                </Backdrop>
+                <Scripts>
+                    <OnEscapePressed>self:ClearFocus()</OnEscapePressed>
+                    <OnTextChanged>if ElitismEPGP_PricesTab then ElitismEPGP_PricesTab:OnEntryChanged() end</OnTextChanged>
+                </Scripts>
+            </EditBox>
+
+            <EditBox parentKey="gpEntry" letters="6" numeric="true" autoFocus="false">
+                <Size x="100" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="126" y="-138"/></Anchors>
+                <FontString inherits="ChatFontNormal"/>
+                <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground"
+                          edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <BackgroundInsets><AbsInset left="3" right="3" top="3" bottom="3"/></BackgroundInsets>
+                    <TileSize><AbsValue val="16"/></TileSize>
+                    <EdgeSize><AbsValue val="12"/></EdgeSize>
+                    <Color r="0" g="0" b="0" a="0.6"/>
+                </Backdrop>
+                <Scripts>
+                    <OnEscapePressed>self:ClearFocus()</OnEscapePressed>
+                    <OnEnterPressed>if ElitismEPGP_PricesTab then ElitismEPGP_PricesTab:OnSetGP() end</OnEnterPressed>
+                </Scripts>
+            </EditBox>
+
+            <EditBox parentKey="linkEntry" letters="200" autoFocus="false">
+                <Size x="234" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="126" y="-164"/></Anchors>
+                <FontString inherits="ChatFontNormal"/>
+                <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground"
+                          edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <BackgroundInsets><AbsInset left="3" right="3" top="3" bottom="3"/></BackgroundInsets>
+                    <TileSize><AbsValue val="16"/></TileSize>
+                    <EdgeSize><AbsValue val="12"/></EdgeSize>
+                    <Color r="0" g="0" b="0" a="0.6"/>
+                </Backdrop>
+                <Scripts>
+                    <OnEscapePressed>self:ClearFocus()</OnEscapePressed>
+                    <OnEnterPressed>if ElitismEPGP_PricesTab then ElitismEPGP_PricesTab:OnSetLinked() end</OnEnterPressed>
+                </Scripts>
+            </EditBox>
+
+            <Button parentKey="setGPBtn" inherits="UIPanelButtonTemplate" text="Set GP">
+                <Size x="86" y="22"/>
+                <Anchors><Anchor point="BOTTOMLEFT" x="20" y="14"/></Anchors>
+            </Button>
+            <Button parentKey="setLinkBtn" inherits="UIPanelButtonTemplate" text="Set Linked">
+                <Size x="100" y="22"/>
+                <Anchors><Anchor point="BOTTOMLEFT" x="112" y="14"/></Anchors>
+            </Button>
+            <Button parentKey="cancelBtn" inherits="UIPanelButtonTemplate" text="Cancel">
+                <Size x="80" y="22"/>
+                <Anchors><Anchor point="BOTTOMRIGHT" x="-20" y="14"/></Anchors>
+            </Button>
+        </Frames>
+    </Frame>
+
+    <!-- Player detail side popup. Opened by clicking a row in the standings
+         list. Header: class icon + name + level/class line + ranks line +
+         officer-only Update EP/GP buttons. Body: filtered history log for
+         this player, with EP / GP / Decay kind toggles. -->
+    <Frame name="ElitismEPGPPlayerDetailFrame" parent="UIParent" enableMouse="true" hidden="true" frameStrata="MEDIUM">
+        <Size x="380" y="500"/>
+        <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="ElitismEPGPMainFrame" relativePoint="TOPRIGHT" x="4" y="0"/>
+        </Anchors>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="playerName" inherits="GameFontNormalLarge" justifyH="LEFT">
+                    <Size x="240" y="22"/>
+                    <Anchors><Anchor point="TOPLEFT" x="94" y="-42"/></Anchors>
+                </FontString>
+                <FontString parentKey="lvlClass" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="260" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="94" y="-63"/></Anchors>
+                </FontString>
+                <FontString parentKey="ranks" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="260" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="94" y="-66"/></Anchors>
+                </FontString>
+
+                <FontString parentKey="historyLabel" inherits="GameFontNormal" text="Player History" justifyH="LEFT">
+                    <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="28" y="-142"/></Anchors>
+                </FontString>
+                <FontString parentKey="kindEPLabel" inherits="GameFontNormalSmall" text="EP" justifyH="LEFT">
+                    <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="156" y="-142"/></Anchors>
+                </FontString>
+                <FontString parentKey="kindGPLabel" inherits="GameFontNormalSmall" text="GP" justifyH="LEFT">
+                    <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="206" y="-142"/></Anchors>
+                </FontString>
+                <FontString parentKey="kindDecayLabel" inherits="GameFontNormalSmall" text="Decay" justifyH="LEFT">
+                    <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="256" y="-142"/></Anchors>
+                </FontString>
+
+                <FontString parentKey="hdrReason" inherits="GameFontHighlightSmall" text="Reason" justifyH="LEFT">
+                    <Size x="94" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="238" y="-160"/></Anchors>
+                </FontString>
+
+                <FontString parentKey="summary" inherits="GameFontDisableSmall" justifyH="LEFT">
+                    <Size x="240" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="28" y="-473"/></Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="hdrBG">
+                    <Size x="370" y="22"/>
+                    <Anchors><Anchor point="TOPLEFT" x="5" y="-158"/></Anchors>
+                    <Color r="0" g="0" b="0" a="0.4"/>
+                </Texture>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Button parentKey="closeButton" inherits="UIPanelCloseButton">
+                <Size x="30" y="30"/>
+                <Anchors><Anchor point="TOPRIGHT" x="-9" y="-19"/></Anchors>
+            </Button>
+
+            <!-- Class icon. Round disc + ring overlay are set via Lua. -->
+            <Button parentKey="classIcon">
+                <Size x="64" y="64"/>
+                <Anchors><Anchor point="TOPLEFT" x="20" y="-33"/></Anchors>
+            </Button>
+
+            <Button parentKey="btnUpdateEP" inherits="UIPanelButtonTemplate" text="Effort Points">
+                <Size x="90" y="22"/>
+                <Anchors><Anchor point="TOPLEFT" x="94" y="-86"/></Anchors>
+            </Button>
+            <Button parentKey="btnUpdateGP" inherits="UIPanelButtonTemplate" text="Gear Points">
+                <Size x="90" y="22"/>
+                <Anchors><Anchor point="TOPLEFT" x="190" y="-86"/></Anchors>
+            </Button>
+
+            <!-- Member-facing actions, shown to non-officers in the same slot as
+                 the officer-only Update buttons. -->
+            <Button parentKey="btnWhisper" inherits="UIPanelButtonTemplate" text="Whisper">
+                <Size x="90" y="22"/>
+                <Anchors><Anchor point="TOPLEFT" x="94" y="-86"/></Anchors>
+            </Button>
+            <Button parentKey="btnInvite" inherits="UIPanelButtonTemplate" text="Invite">
+                <Size x="90" y="22"/>
+                <Anchors><Anchor point="TOPLEFT" x="190" y="-86"/></Anchors>
+            </Button>
+
+            <Button parentKey="hdrTime">
+                <Size x="68" y="18"/>
+                <Anchors><Anchor point="TOPLEFT" x="28" y="-160"/></Anchors>
+                <NormalFont style="GameFontHighlightSmall"/>
+                <ButtonText text="When" justifyH="LEFT"/>
+                <Scripts><OnClick>if ElitismEPGP_PlayerDetailFrame and ElitismEPGP_PlayerDetailFrame.SetSort then ElitismEPGP_PlayerDetailFrame:SetSort("time") end</OnClick></Scripts>
+            </Button>
+            <Button parentKey="hdrActor">
+                <Size x="72" y="18"/>
+                <Anchors><Anchor point="TOPLEFT" x="101" y="-160"/></Anchors>
+                <NormalFont style="GameFontHighlightSmall"/>
+                <ButtonText text="By" justifyH="LEFT"/>
+                <Scripts><OnClick>if ElitismEPGP_PlayerDetailFrame and ElitismEPGP_PlayerDetailFrame.SetSort then ElitismEPGP_PlayerDetailFrame:SetSort("actor") end</OnClick></Scripts>
+            </Button>
+            <Button parentKey="hdrDelta">
+                <Size x="64" y="18"/>
+                <Anchors><Anchor point="TOPLEFT" x="163" y="-160"/></Anchors>
+                <NormalFont style="GameFontHighlightSmall"/>
+                <ButtonText text="Points" justifyH="RIGHT"/>
+                <Scripts><OnClick>if ElitismEPGP_PlayerDetailFrame and ElitismEPGP_PlayerDetailFrame.SetSort then ElitismEPGP_PlayerDetailFrame:SetSort("delta") end</OnClick></Scripts>
+            </Button>
+
+            <CheckButton parentKey="kindEP" inherits="UICheckButtonTemplate">
+                <Size x="22" y="22"/>
+                <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="130" y="-142"/></Anchors>
+            </CheckButton>
+            <CheckButton parentKey="kindGP" inherits="UICheckButtonTemplate">
+                <Size x="22" y="22"/>
+                <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="180" y="-142"/></Anchors>
+            </CheckButton>
+            <CheckButton parentKey="kindDecay" inherits="UICheckButtonTemplate">
+                <Size x="22" y="22"/>
+                <Anchors><Anchor point="LEFT" relativePoint="TOPLEFT" x="230" y="-142"/></Anchors>
+            </CheckButton>
+
+            <ScrollFrame parentKey="scroll" inherits="FauxScrollFrameTemplate">
+                <Size x="310" y="286"/>
+                <Anchors><Anchor point="TOPLEFT" x="24" y="-184"/></Anchors>
+                <Scripts>
+                    <OnVerticalScroll>
+                        FauxScrollFrame_OnVerticalScroll(self, offset, 18, function() if ElitismEPGP_PlayerDetailFrame then ElitismEPGP_PlayerDetailFrame:Refresh() end end)
+                    </OnVerticalScroll>
+                </Scripts>
+            </ScrollFrame>
+        </Frames>
+    </Frame>
+</Ui>

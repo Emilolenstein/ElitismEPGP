@@ -1,0 +1,238 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+    <!-- One bidder row. A Button so click handlers attach cleanly. Hover band
+         is a BACKGROUND `bg` texture that the Lua side flips to the
+         "search-select" atlas on OnEnter (same look as the standings list).
+         Columns: player · bid · PR, then the Award button. -->
+    <Button name="ElitismEPGP_BidRowTemplate" virtual="true">
+        <Size x="328" y="20"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <!-- Anchors are set in Lua so we can outset past the row edges
+                     to cover the full list width, matching standings rows. -->
+                <Texture parentKey="bg">
+                    <Color r="1" g="1" b="1" a="0"/>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="player" inherits="GameFontNormalSmall" justifyH="LEFT">
+                    <Size x="100" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="8" y="-1"/></Anchors>
+                </FontString>
+                <FontString parentKey="choice" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="60" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="120" y="-1"/></Anchors>
+                </FontString>
+                <FontString parentKey="pr" inherits="GameFontHighlightSmall" justifyH="RIGHT">
+                    <Size x="44" y="18"/>
+                    <Anchors><Anchor point="TOPLEFT" x="205" y="-1"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button parentKey="awardButton" inherits="UIPanelButtonTemplate" text="Award">
+                <Size x="60" y="18"/>
+                <Anchors><Anchor point="TOPLEFT" x="270" y="0"/></Anchors>
+            </Button>
+        </Frames>
+    </Button>
+
+    <!-- Default position matches the stock StaticPopup spot (TOP, y=-135 from
+         UIParent) so the bid list opens where confirmation modals appear.
+         A user-dragged position overrides this via BidFrame:SavePos/RestorePos. -->
+    <Frame name="ElitismEPGPBidFrame" parent="UIParent" enableMouse="true" movable="true" hidden="true" frameStrata="DIALOG">
+        <Size x="380" y="430"/>
+        <Anchors><Anchor point="TOP" relativeTo="$parent" relativePoint="TOP" x="0" y="-135"/></Anchors>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <!-- Item icon; rarity border added in Lua (BidFrame:Init pins
+                     f.itemIconBorder around it, Refresh paints/hides per quality). -->
+                <Texture parentKey="itemIcon">
+                    <Size x="40" y="40"/>
+                    <Anchors><Anchor point="TOPLEFT" x="18" y="-16"/></Anchors>
+                </Texture>
+                <!-- Title line: "N / M bidding (countdown)". Details line below
+                     combines the MS/OS split, GP costs, and current leader.
+                     Both filled in BidFrame:Refresh; the countdown stays white. -->
+                <FontString parentKey="bidStatTop" inherits="GameFontNormalLarge" justifyH="LEFT">
+                    <Size x="310" y="22"/>
+                    <Anchors><Anchor point="TOPLEFT" x="66" y="-16"/></Anchors>
+                </FontString>
+                <FontString parentKey="bidStatBot" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Size x="310" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="66" y="-40"/></Anchors>
+                </FontString>
+
+                <FontString parentKey="hdrPlayer" inherits="GameFontHighlightSmall" text="Player" justifyH="LEFT">
+                    <Size x="100" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="24" y="-98"/></Anchors>
+                </FontString>
+                <FontString parentKey="hdrChoice" inherits="GameFontHighlightSmall" text="Bid" justifyH="LEFT">
+                    <Size x="50" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="136" y="-98"/></Anchors>
+                </FontString>
+                <FontString parentKey="hdrPR" inherits="GameFontHighlightSmall" text="PR" justifyH="RIGHT">
+                    <Size x="44" y="14"/>
+                    <Anchors><Anchor point="TOPLEFT" x="221" y="-98"/></Anchors>
+                </FontString>
+
+                <FontString parentKey="emptyText" inherits="GameFontDisableSmall" justifyH="CENTER" text="No bids yet — wait for raiders or use Bid Player to add one." hidden="true">
+                    <Size x="320" y="14"/>
+                    <Anchors><Anchor point="TOP" x="0" y="-136"/></Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="OVERLAY">
+                <!-- Rarity frame around the item icon; placeholder anchor here,
+                     BidFrame:Init re-pins it as a small outset around itemIcon
+                     and Refresh paints/hides it per item quality. -->
+                <Texture parentKey="itemIconBorder" hidden="true">
+                    <Size x="46" y="46"/>
+                    <Anchors><Anchor point="TOPLEFT" x="15" y="-13"/></Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="BORDER">
+                <!-- Header strip behind the column labels — spans the full
+                     inner width (touches the left/right margins). -->
+                <Texture parentKey="hdrBG">
+                    <Size y="18"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT"  x="1"  y="-96"/>
+                        <Anchor point="TOPRIGHT" x="-1" y="-96"/>
+                    </Anchors>
+                    <Color r="0" g="0" b="0" a="0.4"/>
+                </Texture>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <!-- Pokes 6px past the right edge / 5px above the top so it
+                 nests inside the SimpleMetal corner pocket (see RaidManager). -->
+            <Button parentKey="closeButton" inherits="UIPanelCloseButton">
+                <Anchors><Anchor point="TOPRIGHT" x="6" y="5"/></Anchors>
+            </Button>
+
+            <Button parentKey="itemMouseover">
+                <Size x="40" y="40"/>
+                <Anchors><Anchor point="TOPLEFT" x="18" y="-16"/></Anchors>
+            </Button>
+
+            <!-- timerBar (the fancy ui-frame-bar-* countdown bar from the loot
+                 popup) is built in BidFrame:Init via Skin:CreateProgressBar and
+                 anchored just below the title block. The two SimpleMetal-edge
+                 dividers in the footer are also built there. -->
+
+            <ScrollFrame name="$parentScroll" parentKey="scroll" inherits="FauxScrollFrameTemplate">
+                <Size x="328" y="240"/>
+                <Anchors><Anchor point="TOPLEFT" x="16" y="-123"/></Anchors>
+                <Scripts>
+                    <OnVerticalScroll>
+                        FauxScrollFrame_OnVerticalScroll(self, offset, 20, function() if ElitismEPGP_BidFrame then ElitismEPGP_BidFrame:Refresh() end end)
+                    </OnVerticalScroll>
+                </Scripts>
+            </ScrollFrame>
+
+            <!-- Footer: "Bid Again" re-broadcasts the loot popup to raiders
+                 (recorded bids stand); "Bid Player" opens the add-bid modal
+                 (ElitismEPGPAddBidFrame); "Cancel" closes the session with no
+                 award (the old Pass behaviour). -->
+            <Button parentKey="btnAgain" inherits="UIPanelButtonTemplate" text="Bid Again">
+                <Size x="100" y="22"/>
+                <Anchors><Anchor point="BOTTOMLEFT" x="18" y="14"/></Anchors>
+            </Button>
+            <Button parentKey="btnAddBid" inherits="UIPanelButtonTemplate" text="Bid Player">
+                <Size x="100" y="22"/>
+                <Anchors><Anchor point="BOTTOMLEFT" x="124" y="14"/></Anchors>
+            </Button>
+            <Button parentKey="btnCancel" inherits="UIPanelButtonTemplate" text="Cancel">
+                <Size x="100" y="22"/>
+                <Anchors><Anchor point="BOTTOMRIGHT" x="-18" y="14"/></Anchors>
+            </Button>
+        </Frames>
+
+        <Scripts>
+            <OnMouseDown>if button == "LeftButton" then self:StartMoving() end</OnMouseDown>
+            <OnMouseUp>self:StopMovingOrSizing(); if ElitismEPGP_BidFrame and ElitismEPGP_BidFrame.SavePos then ElitismEPGP_BidFrame:SavePos() end</OnMouseUp>
+        </Scripts>
+    </Frame>
+
+    <!-- Add-bid modal: opens at the stock confirmation-popup position (same
+         pattern as ElitismEPGPCustomAwardFrame). Used by the "Bid Player"
+         footer button to record a manual bid on the active session. -->
+    <Frame name="ElitismEPGPAddBidFrame" parent="UIParent" enableMouse="true" movable="true" clampedToScreen="true" hidden="true" frameStrata="FULLSCREEN_DIALOG">
+        <Size x="340" y="150"/>
+        <Anchors><Anchor point="TOP" relativeTo="StaticPopup1" relativePoint="TOP"/></Anchors>
+
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark"
+                  edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets><AbsInset left="11" right="12" top="12" bottom="11"/></BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="title" inherits="GameFontNormalLarge" text="Add Player Bid">
+                    <Anchors><Anchor point="TOP" x="0" y="-14"/></Anchors>
+                </FontString>
+                <FontString parentKey="nameLabel" inherits="GameFontNormalSmall" text="Player name:" justifyH="LEFT">
+                    <Anchors><Anchor point="TOPLEFT" x="20" y="-42"/></Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <!-- Pokes 6px past the right edge / 5px above the top so it
+                 nests inside the SimpleMetal corner pocket. -->
+            <Button parentKey="closeButton" inherits="UIPanelCloseButton">
+                <Anchors><Anchor point="TOPRIGHT" x="6" y="5"/></Anchors>
+            </Button>
+
+            <EditBox parentKey="nameEdit" letters="20" autoFocus="false">
+                <Size x="300" y="20"/>
+                <Anchors><Anchor point="TOPLEFT" x="20" y="-60"/></Anchors>
+                <FontString inherits="ChatFontNormal"/>
+                <TextInsets><AbsInset left="6" right="4" top="0" bottom="0"/></TextInsets>
+                <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground"
+                          edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <BackgroundInsets><AbsInset left="3" right="3" top="3" bottom="3"/></BackgroundInsets>
+                    <TileSize><AbsValue val="16"/></TileSize>
+                    <EdgeSize><AbsValue val="12"/></EdgeSize>
+                    <Color r="0" g="0" b="0" a="0.6"/>
+                </Backdrop>
+                <Scripts>
+                    <OnEscapePressed>ElitismEPGPAddBidFrame:Hide()</OnEscapePressed>
+                </Scripts>
+            </EditBox>
+
+            <Button parentKey="btnMS" inherits="UIPanelButtonTemplate" text="Mainspec">
+                <Size x="90" y="22"/>
+                <Anchors><Anchor point="BOTTOMLEFT" x="20" y="14"/></Anchors>
+            </Button>
+            <Button parentKey="btnOS" inherits="UIPanelButtonTemplate" text="Offspec">
+                <Size x="90" y="22"/>
+                <Anchors><Anchor point="BOTTOMLEFT" x="116" y="14"/></Anchors>
+            </Button>
+            <Button parentKey="btnCancel" inherits="UIPanelButtonTemplate" text="Cancel">
+                <Size x="90" y="22"/>
+                <Anchors><Anchor point="BOTTOMRIGHT" x="-20" y="14"/></Anchors>
+            </Button>
+        </Frames>
+
+        <Scripts>
+            <!-- Re-pin to the stock confirmation-popup spot every time it
+                 opens (a prior drag replaces the anchor with a screen one). -->
+            <OnShow>self:ClearAllPoints(); if StaticPopup1 then self:SetPoint("TOP", StaticPopup1, "TOP", 0, 0) else self:SetPoint("TOP", UIParent, "TOP", 0, -135) end</OnShow>
+            <OnMouseDown>if button == "LeftButton" then self:StartMoving() end</OnMouseDown>
+            <OnMouseUp>self:StopMovingOrSizing()</OnMouseUp>
+        </Scripts>
+    </Frame>
+</Ui>
