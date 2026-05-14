@@ -451,6 +451,19 @@ end
 -- when the configured modifier matches AND the player has permission.
 ------------------------------------------------------------
 
+-- Surface a click-blocked message to both chat AND UIErrorsFrame (the
+-- floating yellow text at the top of the screen). UIErrorsFrame is the
+-- same surface Blizzard uses for "Not enough energy" / "You are silenced"
+-- — officers can't miss it. The chat copy stays as the durable record.
+local function flashBlocked(text)
+    if UIErrorsFrame and UIErrorsFrame.AddMessage then
+        UIErrorsFrame:AddMessage(text, 1.0, 0.4, 0.4, 1.0)
+    end
+    if addon.Print then
+        addon.Print("|cFFFF6060" .. text .. "|r")
+    end
+end
+
 function Loot:OnModifiedItemClick(link)
     local devActive = addon.Dev and addon.Dev:IsActive()
 
@@ -469,28 +482,30 @@ function Loot:OnModifiedItemClick(link)
             return  -- silent: avoid spam on innocuous alt-clicks by non-officers
         end
         if not (addon.RaidSession and addon.RaidSession:IsActive()) then
-            addon.Print("|cFFFF6060Start Raid first — bid sessions require an active session.|r")
+            flashBlocked("ElitismEPGP: Start the raid first — /ee start or use the Raid Manager.")
             return
         end
     end
 
     if self.session then
-        -- Session already in progress — just re-show the existing panel
-        -- instead of erroring. Lets the officer ESC away to look at bags
-        -- then click any item to come back.
+        -- Session already in progress. Re-show the existing panel (re-
+        -- anchoring + clamping so an off-screen frame self-corrects),
+        -- and if the new click is for a different item, flash a clear
+        -- "still in progress" notice so the officer doesn't think the
+        -- new click failed silently.
         if addon.UI and addon.UI.BidFrame and addon.UI.BidFrame.Reopen then
             addon.UI.BidFrame:Reopen()
         end
         if self.session.link and link ~= self.session.link then
-            addon.Print(string.format("|cFFFFCC00Bid for %s is still in progress.|r",
-                self.session.link))
+            flashBlocked("ElitismEPGP: bid for " .. self.session.link
+                .. " still in progress — Award or Cancel it first.")
         end
         return
     end
 
     local ok, err = self:OpenSession(link, { opener = UnitName("player") })
     if not ok then
-        addon.Print("|cFFFF6060Bid open failed:|r " .. tostring(err))
+        flashBlocked("ElitismEPGP: bid open failed — " .. tostring(err))
     end
 end
 

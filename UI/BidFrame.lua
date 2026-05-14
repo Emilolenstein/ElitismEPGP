@@ -176,12 +176,19 @@ function BidFrame:Init()
 
     -- "Bid Again" re-broadcasts the loot popup to raiders (recorded bids stand,
     -- timer restarts); "Bid Player" opens the add-bid modal (records a manual
-    -- bid for a named raider); "Cancel" closes the session with no award (the
-    -- old Pass behaviour); the corner X cancels too.
+    -- bid for a named raider); "Cancel" ends the session with no award; the
+    -- corner X just hides the panel — the session keeps running in the
+    -- background and the RL can bring it back via the View/Hide Bids toggle
+    -- in the Raid Manager (or click any item again).
     f.btnAgain:SetScript  ("OnClick", function() if addon.Loot then addon.Loot:Reannounce() end end)
     f.btnAddBid:SetScript ("OnClick", function() BidFrame:OpenAddBidDialog() end)
-    f.btnCancel:SetScript ("OnClick", function() if addon.Loot then addon.Loot:PassSession() end end)
-    f.closeButton:SetScript("OnClick", function() if addon.Loot then addon.Loot:CancelSession("closed") end end)
+    f.btnCancel:SetScript ("OnClick", function() if addon.Loot then addon.Loot:CancelSession("cancelled") end end)
+    f.closeButton:SetScript("OnClick", function()
+        f:Hide()
+        if addon.UI and addon.UI.RaidManager and addon.UI.RaidManager.RefreshBidToggle then
+            addon.UI.RaidManager:RefreshBidToggle()
+        end
+    end)
 
     -- Wire the add-bid modal (same chrome / position pattern as the Raid
     -- Manager's custom-award popup). Lives in BidFrame.xml; opened by the
@@ -453,15 +460,43 @@ function BidFrame:Open()
     self:Refresh()
 end
 
+-- Detect a frame whose anchor placed it outside the visible screen
+-- (saved position from a different resolution, dragged off-edge before
+-- SetClampedToScreen was enabled, etc.). Used to auto-recover so an
+-- "invisible" BidFrame doesn't look like the click flow is broken.
+local function frameIsOffscreen(f)
+    if not f then return false end
+    local screenW = UIParent and UIParent:GetWidth()  or 0
+    local screenH = UIParent and UIParent:GetHeight() or 0
+    if screenW == 0 or screenH == 0 then return false end
+    local l, b, w, h = f:GetLeft(), f:GetBottom(), f:GetWidth(), f:GetHeight()
+    if not l or not b or not w or not h then return true end
+    -- Off-screen if any edge sits past the corresponding UIParent edge.
+    return l + w < 0 or l > screenW or b + h < 0 or b > screenH
+end
+
 function BidFrame:Reopen()
-    -- Re-show an existing-session panel that was hidden via ESC.
+    -- Re-show an existing-session panel that was hidden via the X (or by
+    -- the View/Hide Bids toggle in Raid Manager). Recovers from a saved
+    -- position that lands outside the visible screen by clearing the
+    -- stored position and re-anchoring to the default StaticPopup spot.
     if not self.frame then self:Init() end
     if not self.frame then return end
     if not (addon.Loot and addon.Loot:GetSession()) then
         addon.Print("|cFFAAAAAANo active bid session to show.|r")
         return
     end
+    self.frame:SetClampedToScreen(true)
     self.frame:Show()
+    if frameIsOffscreen(self.frame) then
+        if addon.DB then addon.DB.profile.bidFramePos = nil end
+        self.frame:ClearAllPoints()
+        if StaticPopup1 then
+            self.frame:SetPoint("TOP", StaticPopup1, "TOP", 0, 0)
+        else
+            self.frame:SetPoint("TOP", UIParent, "TOP", 0, -135)
+        end
+    end
     self:Refresh()
 end
 

@@ -94,7 +94,12 @@ local function bypassChecks()
     return addon.Dev and addon.Dev:IsActive()
 end
 
-function RaidSession:Start()
+-- awardEP defaults to true so existing callers (slash command, dev path)
+-- keep their old behaviour. The Raid Manager passes false explicitly in
+-- "manual" awards mode so the session flips active without auto-paying
+-- the On-Time EP — the RL hands that out via the Award preset buttons.
+function RaidSession:Start(awardEP)
+    if awardEP == nil then awardEP = true end
     if not addon.IsOfficer() then
         addon.Print("|cFFFF6060Cannot start raid: you are not an officer.|r")
         return false, "not an officer"
@@ -120,21 +125,27 @@ function RaidSession:Start()
 
     local raid, dif = self:GetContext()
 
-    -- On-Time EP for the current raid+standby
-    local recipients = addon.Awards:RaidPlusStandby()
-    local ok = 0
-    if #recipients > 0 then
-        local amount = addon.Awards:GetAmountForPreset("ON_TIME", raid, dif)
-        local kind   = addon.Awards.Kind.EP_ON_TIME
-        ok = addon.Awards:GiveEPBulk(recipients, amount, kind,
-            string.format("Start of raid (%s / %s)", raid, dif))
-        addon.Print(string.format("Raid started [%s / %s] — On-time +%d EP awarded to %d player%s.",
-            raid, dif, amount, ok, ok == 1 and "" or "s"))
-        addon.Awards:AnnounceAwarded(
-            string.format("Raid started [%s / %s] — On-time", raid, dif),
-            amount, "EP", recipients)
+    if awardEP then
+        -- On-Time EP for the current raid+standby
+        local recipients = addon.Awards:RaidPlusStandby()
+        local ok = 0
+        if #recipients > 0 then
+            local amount = addon.Awards:GetAmountForPreset("ON_TIME", raid, dif)
+            local kind   = addon.Awards.Kind.EP_ON_TIME
+            ok = addon.Awards:GiveEPBulk(recipients, amount, kind,
+                string.format("Start of raid (%s / %s)", raid, dif))
+            addon.Print(string.format("Raid started [%s / %s] — On-time +%d EP awarded to %d player%s.",
+                raid, dif, amount, ok, ok == 1 and "" or "s"))
+            addon.Awards:AnnounceAwarded(
+                string.format("Raid started [%s / %s] — On-time", raid, dif),
+                amount, "EP", recipients)
+        else
+            addon.Print(string.format("Raid started [%s / %s]. No recipients yet (raid + standby empty).",
+                raid, dif))
+            addon.Awards:Announce(string.format("Raid started [%s / %s].", raid, dif))
+        end
     else
-        addon.Print(string.format("Raid started [%s / %s]. No recipients yet (raid + standby empty).",
+        addon.Print(string.format("Raid started [%s / %s] (Manual mode — use the Award buttons to hand out EP).",
             raid, dif))
         addon.Awards:Announce(string.format("Raid started [%s / %s].", raid, dif))
     end

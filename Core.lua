@@ -21,6 +21,30 @@ function Core:OnInitialize()
         self.db.global.sessionStart = time()
     end
 
+    -- v0.1.1 migration: bossKillMode -> awardsMode. The old field had a
+    -- different scope (only gated boss-kill detection); the new field
+    -- also covers raid start/end. We map conservatively:
+    --   auto    -> auto     (full automation kept)
+    --   quick   -> suggest  (the same "show me before doing it" UX)
+    --   manual  -> suggest  (old "manual" meant no auto boss-kill, but
+    --                        raid start/end still auto-awarded. Mapping
+    --                        to suggest preserves the auto-EP grant via
+    --                        the confirmation dialog rather than dropping
+    --                        it entirely. Users who want zero automation
+    --                        can switch to the new "manual" themselves.)
+    local profile = self.db.profile
+    if profile then
+        if profile.awardsMode == nil and profile.bossKillMode ~= nil then
+            local old = profile.bossKillMode
+            if old == "auto" then
+                profile.awardsMode = "auto"
+            else
+                profile.awardsMode = "suggest"
+            end
+        end
+        if profile.awardsMode == nil then profile.awardsMode = "suggest" end
+    end
+
     self:RegisterChatCommand("ee", "OnSlash")
     self:RegisterChatCommand("elitism", "OnSlash")
 
@@ -120,7 +144,7 @@ local HELP = {
     { officer = true,  text = "|cFFFFFF00/ee dev mockraid set <names>|clear|r override the raid roster (dev mode)" },
     { officer = true,  text = "|cFFFFFF00/ee dev fireboss <name>|r          simulate a BOSS_KILL event (dev mode)" },
     { officer = true,  text = "|cFFFFFF00/ee raid|r                         toggle Raid Manager floating panel" },
-    { officer = true,  text = "|cFFFFFF00/ee mode manual|quick|auto|r       set boss-kill behavior" },
+    { officer = true,  text = "|cFFFFFF00/ee mode manual|suggest|auto|r     set award automation level" },
     { officer = true,  text = "|cFFFFFF00/ee reset epgp <player>|r           reset one player's EP/GP to 0:0" },
     { officer = true,  text = "|cFFFFFF00/ee reset all|r                     WIPE everything (history, EP/GP, prices, settings)" },
     { officer = false, text = "|cFFFFFF00/ee config|r                       open the options panel (Interface > Addons)" },
@@ -129,6 +153,7 @@ local HELP = {
     { officer = true,  text = "|cFFFFFF00/ee bid cancel|r                   cancel the active bid session" },
     { officer = true,  text = "|cFFFFFF00/ee start|r                        start raid session (+On-Time EP, arms boss-kill)" },
     { officer = true,  text = "|cFFFFFF00/ee end|r                          end raid session (+End-of-Raid EP)" },
+    { officer = false, text = "|cFFFFFF00/ee diag|r                         dump config + perms + raid state for triage" },
     { officer = false, text = "|cFFFFFF00/ee help|r                         this list" },
 }
 
@@ -444,21 +469,24 @@ function Core:OnSlash(input)
         addon.UI.RaidManager:Toggle()
     elseif cmd == "mode" then
         local sub = rest:match("^(%S*)") or ""
+        -- "quick" is an alias for "suggest" — kept for muscle memory from
+        -- v0.1.0 since the on-screen label has always been "Suggest".
+        if sub == "quick" then sub = "suggest" end
         if not addon.DB then Print("|cFFFF6060DB not initialized.|r"); return end
-        if sub == "manual" or sub == "quick" or sub == "auto" then
-            addon.DB.profile.bossKillMode = sub
+        if sub == "manual" or sub == "suggest" or sub == "auto" then
+            addon.DB.profile.awardsMode = sub
             if addon.UI and addon.UI.RaidManager and addon.UI.RaidManager.RefreshModeLabel then
                 addon.UI.RaidManager:RefreshModeLabel()
                 addon.UI.RaidManager:RefreshSettingsRadios()
             end
-            Print("Boss-kill mode: |cFF55FF55" .. sub .. "|r")
+            Print("Awards mode: |cFF55FF55" .. sub .. "|r")
         elseif sub == "" or sub == "status" then
-            local cur = addon.DB.profile.bossKillMode or "manual"
+            local cur = addon.DB.profile.awardsMode or "manual"
             local detection = (addon.Encounter and addon.Encounter.GetDetectionMode and addon.Encounter:GetDetectionMode()) or "?"
-            Print(string.format("Boss-kill mode: |cFF55FF55%s|r  |  detection: %s",
+            Print(string.format("Awards mode: |cFF55FF55%s|r  |  detection: %s",
                 cur, detection))
         else
-            Print("Usage: /ee mode manual|quick|auto|status")
+            Print("Usage: /ee mode manual|suggest|auto|status")
         end
     elseif cmd == "start" then
         if not addon.RaidSession then Print("|cFFFF6060RaidSession module not loaded.|r"); return end
@@ -561,7 +589,58 @@ function Core:OnSlash(input)
         end
         local hidden = addon.Minimap:Toggle()
         Print("Minimap button " .. (hidden and "hidden" or "shown") .. ".")
+    elseif cmd == "diag" then
+        addon.Core:PrintDiag()
     else
         Print("Unknown command: " .. cmd .. ". Try /ee help")
     end
+end
+
+-- One-shot diagnostic dump for "is bidding wired up correctly?" triage.
+-- Surfaces config, permissions, raid state, hook installation, and any
+-- active session so an officer can paste the output back to a maintainer
+-- without needing to know which Lua values to query.
+function addon.Core:PrintDiag()
+    local p = addon.DB and addon.DB.profile or {}
+    local lootMethod, _, raidMLId = (GetLootMethod and GetLootMethod()) or "?", nil, nil
+    -- Avoid local _ to keep this paste-safe even if the snippet is later
+    -- shared somewhere that mangles underscores (Discord markdown).
+    if GetLootMethod then
+        local m, pml, rml = GetLootMethod()
+        lootMethod, raidMLId = m, rml
+    end
+    local sess = addon.Loot and addon.Loot:GetSession()
+
+    local function fmtBool(v)
+        if v then return "|cFF55FF55yes|r" else return "|cFFFF6060no|r" end
+    end
+
+    Print("|cFFFFD200--- Elitism EPGP diag ---|r")
+    Print(string.format("version: %s", tostring(addon.VERSION or "?")))
+    Print(string.format("config:  modifier=%s click=%s mode=%s",
+        tostring(p.bidModifier or "ALT"),
+        tostring(p.bidClick    or "LeftButton"),
+        tostring(p.awardsMode  or p.bossKillMode or "manual")))
+    Print(string.format("perms:   officer=%s raidLeader=%s masterLooter=%s inRaid=%s",
+        fmtBool(addon.IsOfficer and addon.IsOfficer()),
+        fmtBool(addon.IsRaidLeaderHere and addon.IsRaidLeaderHere()),
+        fmtBool(lootMethod == "master" and (raidMLId or -1) == 0),
+        fmtBool(addon.InRaid and addon.InRaid())))
+    Print(string.format("raid:    active=%s controller=%s currentRaid=%s currentDiff=%s",
+        fmtBool(p.raidActive),
+        tostring(p.activeController or "-"),
+        tostring(p.currentRaid       or "-"),
+        tostring(p.currentDifficulty or "-")))
+    Print(string.format("hooks:   clickHookInstalled=%s",
+        fmtBool(addon.Loot and addon.Loot._clickHooked)))
+    if sess then
+        Print(string.format("session: link=%s gp=%s remaining=%.1fs bidders=%d",
+            tostring(sess.link),
+            tostring(sess.gp),
+            (addon.Loot.GetTimeRemaining and addon.Loot:GetTimeRemaining()) or 0,
+            sess.bidders and #sess.bidders or 0))
+    else
+        Print("session: |cFFAAAAAAnone|r")
+    end
+    Print("|cFFFFD200--- end diag ---|r")
 end

@@ -129,23 +129,24 @@ function RaidManager:ApplyCustom(which)
 end
 
 function RaidManager:GetMode()
-    return (addon.DB and addon.DB.profile.bossKillMode) or "manual"
+    return (addon.DB and addon.DB.profile.awardsMode) or "manual"
 end
 
 function RaidManager:SetMode(mode)
     if not addon.DB then return end
-    if mode ~= "manual" and mode ~= "quick" and mode ~= "auto" then return end
-    addon.DB.profile.bossKillMode = mode
+    if mode ~= "manual" and mode ~= "suggest" and mode ~= "auto" then return end
+    addon.DB.profile.awardsMode = mode
     self:RefreshModeLabel()
     self:RefreshSettingsRadios()
 end
 
--- Display labels for the mode keys, mirrored from the Boss Award Mode
--- popup so the mode-row reads the same word the user clicked.
+-- Display labels for the mode keys. The internal key controls behaviour
+-- (manual = no auto EP; suggest = confirmation modals; auto = full auto)
+-- while these strings show in the Raid Manager mode row + cog popup.
 local MODE_DISPLAY = {
-    manual = "Manual",
-    quick  = "Suggest",
-    auto   = "Auto",
+    manual  = "Manual",
+    suggest = "Suggest",
+    auto    = "Auto",
 }
 
 function RaidManager:RefreshModeLabel()
@@ -675,7 +676,7 @@ function RaidManager:RefreshSettingsRadios()
     if not s then return end
     local mode = self:GetMode()
     s.radioManual:SetChecked(mode == "manual")
-    s.radioQuick:SetChecked(mode == "quick")
+    s.radioQuick:SetChecked(mode == "suggest")  -- radio var name kept for back-compat
     s.radioAuto:SetChecked(mode == "auto")
 end
 
@@ -799,7 +800,7 @@ function RaidManager:HandleBossKill(bossName, force)
     local mode = self:GetMode()
     if mode == "manual" then
         if not force then return end
-        mode = "quick"
+        mode = "suggest"
     end
 
     self:Open()
@@ -810,7 +811,7 @@ function RaidManager:HandleBossKill(bossName, force)
         local amount = addon.Awards:GetAmountForPreset("BOSS_KILL", raid, dif)
         if #recipients == 0 then
             addon.Print(string.format("|cFFFFCC00Auto: %s killed but no recipients.|r", bossName))
-            self:ShowBanner(bossName, "quick")
+            self:ShowBanner(bossName, "suggest")
             return
         end
         local ok, fails = addon.Awards:GiveEPBulk(recipients, amount, addon.Awards.Kind.EP_BOSS_KILL, "Killed: " .. bossName)
@@ -819,7 +820,7 @@ function RaidManager:HandleBossKill(bossName, force)
             string.format("Boss kill — %s", bossName), amount, "EP", recipients)
         self:ShowBanner(bossName, "auto", { ok = ok, amount = amount })
     else
-        self:ShowBanner(bossName, "quick")
+        self:ShowBanner(bossName, "suggest")
     end
     self:Refresh()
 end
@@ -1241,9 +1242,9 @@ local function WireSettingsFrame()
     -- Each radio gets a row button that spans the popup width with a
     -- hover highlight; clicking anywhere on the row selects that mode.
     -- Top-Y values match the radios' anchored positions (~radio.top - 1).
-    makeRadioRow(s, "radioManual", "manual", -29)
-    makeRadioRow(s, "radioQuick",  "quick",  -53)
-    makeRadioRow(s, "radioAuto",   "auto",   -77)
+    makeRadioRow(s, "radioManual", "manual",  -29)
+    makeRadioRow(s, "radioQuick",  "suggest", -53)
+    makeRadioRow(s, "radioAuto",   "auto",    -77)
     -- Hide the click-outside eater whenever the settings frame closes,
     -- regardless of who triggered the close (eater click, cog re-click,
     -- RM hide via X, /reload, etc.).
@@ -1715,16 +1716,25 @@ end
 
 function RaidManager:OnRaidSessionClick()
     if not addon.RaidSession then return end
-    -- Profile toggle: when off, Start/End act immediately without a
-    -- confirmation dialog. Default-on (set in DB_DEFAULTS.profile).
-    local confirmEnabled = (addon.DB and addon.DB.profile and addon.DB.profile.confirmRaidStartEnd ~= false)
+    -- Awards-mode gating (replaces the old confirmRaidStartEnd toggle):
+    --   manual  -> Start/End flip raidActive but skip auto-EP. The RL
+    --              hands out On-Time / End-of-Raid via the preset
+    --              buttons in the Raid Manager when they're ready.
+    --   suggest -> show a confirmation modal pre-action; on accept,
+    --              auto-award like the old "confirm = on" path.
+    --   auto    -> Start/End fires immediately with EP, no prompt.
+    local mode  = self:GetMode()
     local raid, dif = addon.RaidSession:GetContext()
     local count = (addon.Awards and addon.Awards.RaidPlusStandby)
         and #addon.Awards:RaidPlusStandby() or 0
     local plural = (count == 1) and "" or "s"
 
     if addon.RaidSession:IsActive() then
-        if not confirmEnabled then
+        if mode == "manual" then
+            addon.RaidSession:End(false)
+            return
+        end
+        if mode == "auto" then
             addon.RaidSession:End(true)
             return
         end
@@ -1739,8 +1749,12 @@ function RaidManager:OnRaidSessionClick()
             OnAccept = function() addon.RaidSession:End(true) end,
         })
     else
-        if not confirmEnabled then
-            addon.RaidSession:Start()
+        if mode == "manual" then
+            addon.RaidSession:Start(false)
+            return
+        end
+        if mode == "auto" then
+            addon.RaidSession:Start(true)
             return
         end
         local amount = (addon.Awards and addon.Awards.GetAmountForPreset)
@@ -1755,7 +1769,7 @@ function RaidManager:OnRaidSessionClick()
                 "Start a %s (%s) raid session and award |cFF55FF55+%d EP|r on-time to %d player%s?",
                 raidName or "?", dif or "?", amount, count, plural),
             accept = "Start",
-            OnAccept = function() addon.RaidSession:Start() end,
+            OnAccept = function() addon.RaidSession:Start(true) end,
         })
     end
 end

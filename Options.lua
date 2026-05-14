@@ -390,25 +390,25 @@ local function guildManagementGroup()
                 hidden = function() return not isOfficer() end,
                 args = {
 
-            header_bosskill = {
-                type = "header", order = 20, name = "Boss-kill Detection",
+            header_awards = {
+                type = "header", order = 20, name = "Awards Points",
             },
-            bossKillMode = {
-                type = "select", order = 21, name = "Mode", desc = "How the addon reacts when a boss dies.",
+            awardsDesc = {
+                type = "description", order = 21, fontSize = "small",
+                name = "Controls how much the addon does automatically when you Start / End a raid and when a boss dies. Lower = fewer surprises; higher = less clicking.",
+            },
+            awardsMode = {
+                type = "select", order = 22, name = "Mode",
+                desc = "Manual: nothing fires automatically — you award EP with the preset buttons in the Raid Manager.\n"
+                    .. "Suggest: a confirmation modal appears on Start / End raid + on boss kill so you can review before granting.\n"
+                    .. "Auto: Start / End raid and boss kills auto-grant EP immediately with no prompts.",
                 values = {
-                    manual = "Manual (no auto action)",
-                    quick  = "Quick (open panel + Boss Kill banner)",
-                    auto   = "Auto (auto-grant Boss Kill EP)",
+                    manual  = "Manual (you click Award for everything)",
+                    suggest = "Suggest (confirmation modal on each event)",
+                    auto    = "Auto (everything fires immediately)",
                 },
-                get = function() return P().bossKillMode or "manual" end,
-                set = function(_, v) P().bossKillMode = v; refreshRaidManager() end,
-            },
-            confirmRaidStartEnd = {
-                type = "toggle", order = 22, width = "double",
-                name = "Confirmation message when starting and ending a raid",
-                desc = "Show a confirmation dialog before starting or ending a raid session. Disable to start/end immediately on click.",
-                get = function() return P().confirmRaidStartEnd ~= false end,
-                set = function(_, v) P().confirmRaidStartEnd = v and true or false end,
+                get = function() return P().awardsMode or "manual" end,
+                set = function(_, v) P().awardsMode = v; refreshRaidManager() end,
             },
 
             header_decay = {

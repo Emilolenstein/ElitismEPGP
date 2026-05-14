@@ -660,6 +660,28 @@ function Awards:WeeklyMaintenance(decayMult)
     local syncOk, syncErr
     if addon.GuildSync then syncOk, syncErr = addon.GuildSync:Write() end
 
+    -- Broadcast to the guild so members know decay just ran (and why
+    -- their numbers moved). The officer-stipend grant goes to the
+    -- officer channel only — non-officers don't need to hear about the
+    -- weekly EP officers pay themselves.
+    if IsInGuild and IsInGuild() and SendChatMessage then
+        SendChatMessage(string.format(
+            "ElitismEPGP: Weekly maintenance — %d%% decay applied to %d player%s.",
+            pctInt, memberCount, memberCount == 1 and "" or "s"),
+            "GUILD")
+        if officerCount > 0 then
+            -- Officer chat requires Edit Officer Note rank to write —
+            -- WeeklyMaintenance is already gated on CanWrite() so the
+            -- sender has the rank. Wrapped in pcall as belt-and-suspenders
+            -- against weird server behaviour on guilds without an
+            -- officer-note rank configured at all.
+            pcall(SendChatMessage, string.format(
+                "ElitismEPGP: Weekly officer stipend — +%d EP to %d officer%s.",
+                officerEP, officerCount, officerCount == 1 and "" or "s"),
+                "OFFICER")
+        end
+    end
+
     return true, {
         officerCount = officerCount, officerFails = officerFails,
         memberCount  = memberCount,  memberFails  = memberFails,

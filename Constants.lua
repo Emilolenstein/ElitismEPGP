@@ -162,7 +162,13 @@ addon.DB_DEFAULTS = {
         minimap               = { hide = false },
         dev                   = false,
         mockRaid              = {},
-        bossKillMode          = "manual",
+        -- Award automation mode: "manual" (no auto EP — RL clicks Award),
+        -- "suggest" (confirmation modal on start/end raid + boss kill
+        -- banner), "auto" (everything fires without prompts). Default
+        -- is "suggest" so a fresh install surfaces every grant for
+        -- review before committing. Replaces the legacy `bossKillMode`
+        -- field — old profiles are migrated in Core.lua's OnInitialize.
+        awardsMode            = "suggest",
         raidManagerPos        = nil,
         mockEntries           = {},
         showSelfStar          = true,
@@ -186,7 +192,9 @@ addon.DB_DEFAULTS = {
         tooltipShowPR         = true,
         bgOpacity             = 89,  -- main window backdrop opacity, percent
         colorNameByClass      = false,  -- when true, Name and Rank columns use class color
-        confirmRaidStartEnd   = true,  -- show a confirmation dialog before starting / ending a raid session
+        -- confirmRaidStartEnd retired in v0.1.1 — the unified `awardsMode`
+        -- field above now controls confirmation behavior (manual / suggest
+        -- / auto). Legacy profiles' stored value is ignored.
     },
 }
 
