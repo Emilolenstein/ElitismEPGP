@@ -181,7 +181,16 @@ local SORTERS = {
     level = function(a, b) return (a.level or 0) > (b.level or 0) end,
     ep    = function(a, b) return a.ep > b.ep end,
     gp    = function(a, b) return a.gp > b.gp end,
-    pr    = function(a, b) return a.pr > b.pr end,
+    -- Option A tiebreaker: when PRs match (typical when both players sit
+    -- below the basegp floor and their PR is just ep/basegp), the player
+    -- with LESS actual GP sorts first. Receiving an item nudges their GP
+    -- up, which moves them below their tied peers immediately — no
+    -- "winner stays at the top" surprise after an award.
+    pr = function(a, b)
+        if a.pr ~= b.pr then return a.pr > b.pr end
+        if (a.gp or 0) ~= (b.gp or 0) then return (a.gp or 0) < (b.gp or 0) end
+        return (a.name or "") < (b.name or "")
+    end,
 }
 
 function Roster:Sorted(key)

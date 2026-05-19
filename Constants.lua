@@ -19,8 +19,8 @@ addon.VARS = {
     maxLogLines           = 500,
     osMultiplier          = 0.10,
     gpFormulaBase         = 1,
-    gpFormulaStandardIlvl = 264,
-    gpFormulaDoublingIlvl = 26,  -- ilvls per 2× price (lower = steeper ramp)
+    gpFormulaStandardIlvl = 65,   -- Ascension is level-60 capped; vanilla raid gear sits in the 65–92 range.
+    gpFormulaDoublingIlvl = 26,   -- Internal storage. Exposed in the UI as "Price ramp = 26 / doubling".
     epHeroicMult          = 1.5,
     epMythicMult          = 2.0,
     epAscendedMult        = 3.0,

@@ -2,7 +2,7 @@
 ## Title: ElitismEPGP
 ## Notes: EP/GP loot system with AtlasLoot integration
 ## Author: Elitism
-## Version: 0.1.1
+## Version: 0.1.2
 ## SavedVariables: ElitismEPGPDB
 ## OptionalDeps: AtlasLoot, DBM-Core
 ## X-Category: Raid

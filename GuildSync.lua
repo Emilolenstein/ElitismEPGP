@@ -299,9 +299,18 @@ end
 -- Read: pull Guild Info → DB.global
 ------------------------------------------------------------------------
 
+-- Guard against the slider-revert race: when the officer just edited a
+-- value, `set` updates DB.global and schedules a debounced Write. If a
+-- GUILD_ROSTER_UPDATE fires during that window (which happens on every
+-- login/logout/ping in a populated guild), Read would otherwise decode
+-- the stale Guild Info text and clobber the in-flight edit. Set to a
+-- GetTime() value in WriteDebounced; Reads inside the window no-op.
+local readSuppressedUntil = 0
+
 function GuildSync:Read()
     if not GetGuildInfoText then return end
     if not addon.DB then return end
+    if GetTime() < readSuppressedUntil then return end
     local data, err = self:Decode(GetGuildInfoText())
     if not data then
         -- Silent on "no schema version" / empty / pre-addon text — that's
@@ -395,5 +404,9 @@ end
 function GuildSync:WriteDebounced()
     if not (CanEditGuildInfo and CanEditGuildInfo()) then return end
     fireAt = GetTime() + DEBOUNCE_SECS
+    -- Suppress incoming Reads until our write fires + a 2s settle window
+    -- (covers the moment between SetGuildInfoText running locally and
+    -- the server reflecting it back in GetGuildInfoText).
+    readSuppressedUntil = fireAt + 2
     ensurePump():Show()
 end

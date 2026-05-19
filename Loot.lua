@@ -332,11 +332,17 @@ function Loot:GetBidders()
             missing   = (entry == nil),
         }
     end
+    -- Option A tiebreaker: tier first (MS > OS > BANK > PASS), then PR
+    -- descending, then GP ASCENDING (the player who's received less wins
+    -- the tie), then name alphabetical. Lower-GP tiebreak means after an
+    -- award the recipient's GP rises and they drop below tied peers, so
+    -- the next item rotates to a different player without the floor
+    -- "stickiness".
     table.sort(out, function(a, b)
         local ra, rb = CHOICE_RANK[a.choice] or 99, CHOICE_RANK[b.choice] or 99
         if ra ~= rb then return ra < rb end
         if a.pr ~= b.pr then return a.pr > b.pr end
-        if a.ep ~= b.ep then return a.ep > b.ep end
+        if (a.gp or 0) ~= (b.gp or 0) then return (a.gp or 0) < (b.gp or 0) end
         return a.name < b.name
     end)
     return out
@@ -691,36 +697,96 @@ end
 --     the winner is only declared when an officer clicks Award.
 ------------------------------------------------------------
 
--- Build the "Top bids" raid-chat line from a session and broadcast it. Reads
--- the session's own bidders[] (NOT Loot:GetBidders, which routes through
--- Loot.session and would return {} if a listener happened to clear it during
+-- Build the end-of-bid raid-chat announcement from a session and broadcast
+-- it. Reads the session's own bidders[] (NOT Loot:GetBidders, which routes
+-- through Loot.session and would return {} if a listener cleared it during
 -- the TIMEOUT notify). Player names are sent plain — the chat parser drops
 -- the message if a standalone colour escape sits alongside the item link.
+--
+-- Output shape (Option A semantics):
+--   * No bids at all:   "no bids for <item>."
+--   * Single winner:    "<name> wins <item> (MS, PR 1.40)."
+--   * Tie at the top:   "tie for <item> (MS, PR 1.40) — <a>, <b>: please /roll."
+--
+-- A "tie" is bidders in the highest-priority tier (MS > OS > BANK) whose
+-- (PR, GP) tuple matches the leader's. Same PR but higher GP is NOT a tie
+-- under Option A — the higher-GP player sorts below the leader and is
+-- excluded from the roll. Pass bids are never announced as winners.
 local function announceTopBids(s)
     if not s or not s.bidders then return end
 
-    local bidders = {}
+    -- Resolve each non-PASS bidder to a live (ep, gp, pr) snapshot. Bids
+    -- are stored on the session with just (name, choice), so we recompute
+    -- PR off the roster here — same code path as GetBidders.
+    local function snapshot(b)
+        local source
+        if addon.Roster and addon.Roster.ResolveMain then
+            source = (addon.Roster:ResolveMain(b.name))
+        end
+        source = source or (addon.Roster and addon.Roster:Get(b.name))
+        local ep = source and source.ep or 0
+        local gp = source and source.gp or 0
+        local pr = (addon.Roster and addon.Roster.PR
+                    and addon.Roster:PR(ep, gp)) or 0
+        return ep, gp, pr
+    end
+
+    -- Bucket bidders by tier and resolve their PR/GP.
+    local tiers = { [CHOICE_MS] = {}, [CHOICE_OS] = {}, [CHOICE_BANK] = {} }
     for _, b in ipairs(s.bidders) do
-        if b.choice ~= CHOICE_PASS then
-            bidders[#bidders + 1] = b
+        if tiers[b.choice] then
+            local ep, gp, pr = snapshot(b)
+            tiers[b.choice][#tiers[b.choice] + 1] = {
+                name = b.name, choice = b.choice, ep = ep, gp = gp, pr = pr,
+            }
+        end
+    end
+
+    -- Highest-occupied tier wins (MS > OS > BANK). PASS never qualifies.
+    local TIER_ORDER = { CHOICE_MS, CHOICE_OS, CHOICE_BANK }
+    local pickedTier, pool
+    for _, t in ipairs(TIER_ORDER) do
+        if #tiers[t] > 0 then
+            pickedTier, pool = t, tiers[t]
+            break
         end
     end
 
     local item = s.link or s.name or "item"
     local msg
-    if #bidders == 0 then
+
+    if not pool then
         msg = string.format("ElitismEPGP: no bids for %s.", item)
     else
-        local parts = {}
-        for i = 1, math.min(3, #bidders) do
-            local b = bidders[i]
-            local tag = (b.choice == CHOICE_MS and "MS")
-                     or (b.choice == CHOICE_OS and "OS")
-                     or (CHOICE_LABEL[b.choice] or b.choice or "?")
-            parts[i] = string.format("%d. %s (%s)", i, b.name, tag)
+        -- Sort by PR desc, GP asc (Option A). Tied set = bidders matching
+        -- the leader's (PR, GP) tuple exactly. Higher-GP players are
+        -- excluded by virtue of sorting below the leader.
+        table.sort(pool, function(a, b)
+            if a.pr ~= b.pr then return a.pr > b.pr end
+            if (a.gp or 0) ~= (b.gp or 0) then return (a.gp or 0) < (b.gp or 0) end
+            return a.name < b.name
+        end)
+        local leader = pool[1]
+        local tied = { leader.name }
+        for i = 2, #pool do
+            if pool[i].pr == leader.pr and (pool[i].gp or 0) == (leader.gp or 0) then
+                tied[#tied + 1] = pool[i].name
+            else
+                break
+            end
         end
-        msg = string.format("ElitismEPGP: top bids for %s — %s",
-            item, table.concat(parts, ", "))
+
+        local tag = (pickedTier == CHOICE_MS and "MS")
+                 or (pickedTier == CHOICE_OS and "OS")
+                 or (CHOICE_LABEL[pickedTier] or pickedTier)
+        if #tied == 1 then
+            msg = string.format("ElitismEPGP: %s wins %s (%s, PR %.2f).",
+                leader.name, item, tag, leader.pr)
+        else
+            msg = string.format(
+                "ElitismEPGP: tie for %s (%s, PR %.2f) — %s: please /roll.",
+                item, tag, leader.pr, table.concat(tied, ", "))
+        end
     end
 
     if GetNumRaidMembers and GetNumRaidMembers() > 0 then

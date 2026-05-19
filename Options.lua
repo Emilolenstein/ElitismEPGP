@@ -144,6 +144,12 @@ local SLOT_CATEGORY = {
     INVTYPE_THROWN        = "weapon",
 }
 
+-- Forward declaration: the reset closure inside makeSlotMultiplierArgs
+-- (below) references resetSlotMultipliers, but the function body lives
+-- further down in this file. Without this `local` at the top of the
+-- scope block, the closure resolves to a nil global at click time.
+local resetSlotMultipliers
+
 -- Returns AceConfig args of range sliders for every slot in `category`
 -- ("armor", "accessory", or "weapon"), sorted alphabetically by display
 -- label. Includes a per-category "Reset to defaults" button at the bottom.
@@ -194,7 +200,9 @@ end
 -- write — debounce coalesces the burst of notifications into one block.
 
 -- Per-category slot reset. With no category, clears every slot override.
-local function resetSlotMultipliers(category)
+-- Assigned (not declared) so the forward-declared local above is bound
+-- — otherwise the closure that captures it earlier would see nil.
+function resetSlotMultipliers(category)
     local g = G()
     if not g or not g.slotMultipliers then return end
     local toClear = {}
@@ -436,7 +444,7 @@ local function guildManagementGroup()
                 func = resetWeeklyMaintenance,
             },
 
-            -- GP Formula (Base GP, Standard ilvl, Off-spec %, Slot Multipliers)
+            -- GP Formula (Base GP, Base ilvl, Price ramp, Off-spec %, Slot Multipliers)
             -- now lives in its own |cFFFFCC00Gear Points|r sidebar entry. Keeping
             -- it out of Officer & RL lets us scope formula tunables next
             -- to the related Effort Points page and reduces the sprawl here.
@@ -781,24 +789,40 @@ local function gearPointsGroup()
                     },
                     basegp = {
                         type = "range", order = 2, name = "Base GP",
-                        desc = "GP at the standard ilvl. Formula: GP = base × 2^((ilvl − standard) / doubling) × slot.",
+                        desc = "GP that an item at Base ilvl costs (before slot multiplier). The Price ramp below pulls higher-ilvl items above this value.",
                         min = 1, max = 999, step = 1,
                         get = function() return G().basegp or addon.VARS.basegp end,
                         set = function(_, v) G().basegp = v; notifyConfig("basegp") end,
                     },
                     gpFormulaStandardIlvl = {
-                        type = "range", order = 3, name = "Standard ilvl",
-                        desc = "Reference ilvl for the formula. Items at this ilvl cost exactly Base GP.",
-                        min = 1, max = 600, step = 1,
+                        type = "range", order = 3, name = "Base ilvl",
+                        desc = "Reference ilvl that costs exactly Base GP. Items above pay more, items below pay less, and the steepness of that curve is set by Price ramp. Recommended for Ascension: 65 (vanilla raid tier on a level-60 server).",
+                        min = 1, max = 100, step = 1,
                         get = function() return G().gpFormulaStandardIlvl or addon.VARS.gpFormulaStandardIlvl end,
                         set = function(_, v) G().gpFormulaStandardIlvl = v; notifyConfig("gpFormulaStandardIlvl") end,
                     },
                     gpFormulaDoublingIlvl = {
-                        type = "range", order = 4, name = "Ilvl per doubling",
-                        desc = "Item levels per 2× price. Lower = steeper ramp (cheaper Normal vs Heroic), higher = flatter. Default 26 means a +26 ilvl item costs twice as much.",
-                        min = 5, max = 100, step = 1,
-                        get = function() return G().gpFormulaDoublingIlvl or addon.VARS.gpFormulaDoublingIlvl end,
-                        set = function(_, v) G().gpFormulaDoublingIlvl = v; notifyConfig("gpFormulaDoublingIlvl") end,
+                        -- Exposed to the user as "Price ramp" (1..10); stored
+                        -- internally as the existing gpFormulaDoublingIlvl
+                        -- field (= 26 / ramp) so Prices:Compute and the
+                        -- Guild Info sync don't need changes.
+                        type = "range", order = 4, name = "Price ramp",
+                        desc = "How steeply the price climbs above Base ilvl. 1 = the default curve (items at Base ilvl +26 cost 2× Base GP). 2 = roughly twice as steep. 10 = max steepness, very expensive Heroics. If your EP awards differ a lot between Normal and Heroic, raise this so the GP costs scale alongside.",
+                        min = 1, max = 10, step = 0.1, isPercent = false,
+                        get = function()
+                            local d = G().gpFormulaDoublingIlvl or addon.VARS.gpFormulaDoublingIlvl or 26
+                            if d <= 0 then return 1 end
+                            local ramp = 26 / d
+                            if ramp < 1  then ramp = 1  end
+                            if ramp > 10 then ramp = 10 end
+                            return ramp
+                        end,
+                        set = function(_, ramp)
+                            if not ramp or ramp < 1 then ramp = 1  end
+                            if ramp > 10            then ramp = 10 end
+                            G().gpFormulaDoublingIlvl = 26 / ramp
+                            notifyConfig("gpFormulaDoublingIlvl")
+                        end,
                     },
                     osMultiplier = {
                         type = "range", order = 5, name = "Off-spec %",
@@ -811,7 +835,7 @@ local function gearPointsGroup()
                     },
                     gpFormulaReset = {
                         type = "execute", order = 7, name = "Reset to Defaults",
-                        desc = "Reset Base GP, Standard ilvl, Ilvl per doubling, and Off-spec % to the bundled defaults.",
+                        desc = "Reset Base GP, Base ilvl, Price ramp, and Off-spec % to the bundled defaults.",
                         func = resetGPFormula,
                     },
                     header_slots = {
@@ -819,7 +843,7 @@ local function gearPointsGroup()
                     },
                     slotMultipliersDesc = {
                         type = "description", order = 9, fontSize = "small",
-                        name = "Multiplier per equipment slot. GP = base × slot mult × 2^((ilvl − standard) / doubling). Set 0 to make a slot effectively free; values above 1.0 scale GP up. Each section has its own reset.",
+                        name = "Multiplier per equipment slot, applied on top of the GP formula above. Set 0 to make a slot effectively free; values above 1.0 scale GP up. Each section has its own reset.",
                     },
                     slotMultipliersArmor = {
                         type = "group", inline = true, order = 10,

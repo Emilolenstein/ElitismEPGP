@@ -6,6 +6,17 @@ Unreleased changes live under the `[Unreleased]` heading; when you cut a release
 
 ## [Unreleased]
 
+## [0.1.2] — 2026-05-15
+
+### Changed
+- **GP formula UI rework**: the *Standard ilvl* + *Ilvl per doubling* sliders have been replaced by **Base ilvl** and **Price ramp** for an intuitive setup. Base ilvl is the reference item level (recommended 65 for Ascension). Price ramp is a 1-10 scale where higher = pricier high-ilvl items (instead of the previous "higher = flatter curve" inverse). Internal wire format is unchanged — `Prices:Compute` and Guild Info sync still use the same doubling field under the hood. **Manual rollout note**: existing officers won't see any change to their stored values until someone explicitly clicks Reset to Defaults under GP Formula. Coordinate the upgrade with your team before resetting so non-upgraded officers aren't surprised.
+- **Option A tiebreaker** for tied-PR players: when two players share the same PR (typical when both sit below the Base GP floor and have `PR = ep/basegp`), the player with **less actual GP** sorts higher. Receiving an item nudges their GP up and immediately rotates them below tied peers — no more "winner stays at the top" surprise after an award. Applied in both the Standings list and the bid winner selection.
+- **End-of-bid raid-chat message** reformatted from "top 3" to **winner + tier + PR**, or **tied set + /roll prompt** if multiple bidders share the same (PR, GP) tuple. Higher-PR tier (MS > OS > BANK) automatically picks the candidate pool; PASS bids never qualify as winners. Under Option A, same-PR-but-higher-GP players are correctly excluded from the tied set.
+
+### Fixed
+- **GP Formula "Reset to Defaults" button** no longer errored on click (`resetSlotMultipliers` was being referenced inside a closure before its `local function` declaration; forward-declared so the upvalue captures correctly).
+- **Slider revert race in Guild Info sync**: after dragging or typing a value into any EP/GP slider, an incoming `GUILD_ROSTER_UPDATE` (which fires constantly on every guildie login/logout/ping) would trigger `GuildSync:Read` and clobber the in-flight edit with the stale Guild Info text. `GuildSync:Read` now no-ops during the 3.5s window between an edit and its committed write. Edits stick reliably.
+
 ## [0.1.1] — 2026-05-14
 
 ### Added
@@ -50,6 +61,7 @@ Initial public release.
 - Officer/RL settings page gated on the guild's "Edit Officer Note" rank.
 - MIT license, README, CHANGELOG, GitHub issue templates.
 
-[Unreleased]: https://github.com/Emilolenstein/ElitismEPGP/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/Emilolenstein/ElitismEPGP/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/Emilolenstein/ElitismEPGP/releases/tag/v0.1.2
 [0.1.1]: https://github.com/Emilolenstein/ElitismEPGP/releases/tag/v0.1.1
 [0.1.0]: https://github.com/Emilolenstein/ElitismEPGP/releases/tag/v0.1.0
