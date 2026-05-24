@@ -163,9 +163,20 @@ function HistoryDetailFrame:Open(entry, group)
     end
 
     if entry.kind == "Decay" then
-        self.frame.emptyText:SetText("No per-player breakdown stored for decay.")
-        self.frame.emptyText:Show()
-        currentMembers = {}
+        -- v0.1.3+ decay entries carry a per-member breakdown in
+        -- entry.members; legacy entries (logged before v0.1.3) don't,
+        -- so fall through to the empty-text message.
+        if entry.members and #entry.members > 0 then
+            currentMembers = {}
+            for i = 1, #entry.members do
+                currentMembers[#currentMembers + 1] = entry.members[i]
+            end
+            self.frame.emptyText:Hide()
+        else
+            self.frame.emptyText:SetText("No per-player breakdown stored for this decay (logged before v0.1.3).")
+            self.frame.emptyText:Show()
+            currentMembers = {}
+        end
     else
         self.frame.emptyText:Hide()
     end

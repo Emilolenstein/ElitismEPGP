@@ -549,16 +549,31 @@ end
 function Awards:OfficerRanks()
     -- Auto-detect from the "Edit Officer Note" rank flag. There's no manual
     -- override anymore — the privilege itself is the authority on this server.
-    -- Note: GuildControlGetRankFlags is reliable only on clients that have
-    -- officer-note permission; non-officers may see partial data and get
-    -- only the GM rank back. Sync.senderRankIsOfficer accounts for that.
+    --
+    -- API gotchas in 3.3.5a:
+    --   1. GuildControlGetRankFlags returns ~16 flags. The 4th is
+    --      canOfficerChatSpeak; canEditOfficerNote is the 12th. An
+    --      earlier version of this code read position 4 and named the
+    --      variable canEditOfficerNote — which silently classified any
+    --      "officer alt" rank (chat access but no note-write permission)
+    --      as a full officer.
+    --   2. Rank 0 is the Guild Master. GuildControlSetRank(0) doesn't
+    --      reliably switch context — the GM rank can't be edited via
+    --      the guild controls UI, so the API leaves stale flags from a
+    --      previous iteration. We pin rank 0 as always-officer; the GM
+    --      has implicit all-permissions by definition.
+    --   3. GuildControlGetRankFlags is reliable only on clients that
+    --      have officer-note permission; non-officers may see partial
+    --      data and get only the GM rank back. Sync.senderRankIsOfficer
+    --      accounts for that.
     local ranks = {}
     if GuildControlGetNumRanks and GuildControlSetRank and GuildControlGetRankFlags then
-        local n = GuildControlGetNumRanks()
-        for i = 0, n - 1 do
+        local n = GuildControlGetNumRanks() or 0
+        if n > 0 then ranks[0] = true end  -- GM (implicit all-perms)
+        for i = 1, n - 1 do
             GuildControlSetRank(i)
-            local _, _, _, canEditOfficerNote = GuildControlGetRankFlags()
-            if canEditOfficerNote then ranks[i] = true end
+            local flags = { GuildControlGetRankFlags() }
+            if flags[12] then ranks[i] = true end
         end
     end
     return ranks
@@ -621,6 +636,12 @@ function Awards:WeeklyMaintenance(decayMult)
     end
     currentGroupId = nil
 
+    -- Per-member breakdown: HistoryDetailFrame iterates this when the
+    -- user clicks the Decay row in the History tab. Shape matches the
+    -- per-row data the detail view already renders for regular entries
+    -- (target / dEP / dGP / before / after) so no special rendering path
+    -- is needed.
+    local decayMembers = {}
     for name, entry in pairs(addon.Roster.cache) do
         if entry.kind ~= "alt" then
             local oldEP, oldGP = entry.ep or 0, entry.gp or 0
@@ -632,6 +653,14 @@ function Awards:WeeklyMaintenance(decayMult)
                     if safeSetOfficerNote(entry, name, encoded) then
                         entry.ep, entry.gp, entry.officerNote = newEP, newGP, encoded
                         memberCount = memberCount + 1
+                        decayMembers[#decayMembers + 1] = {
+                            target = name,
+                            kind   = self.Kind.DECAY,
+                            dEP    = newEP - oldEP,
+                            dGP    = newGP - oldGP,
+                            before = { ep = oldEP, gp = oldGP },
+                            after  = { ep = newEP, gp = newGP },
+                        }
                     else
                         memberFails[#memberFails + 1] = { name = name, err = "roster index out of sync" }
                     end
@@ -653,6 +682,7 @@ function Awards:WeeklyMaintenance(decayMult)
         dEP    = 0, dGP = 0,
         note   = string.format("decay %d%% applied to %d members; %d officers received +%d EP",
             pctInt, memberCount, officerCount, officerEP),
+        members = decayMembers,
     })
 
     if addon.DB then addon.DB.global.lastDecay = time() end

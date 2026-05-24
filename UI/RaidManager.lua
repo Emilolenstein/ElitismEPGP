@@ -1516,14 +1516,14 @@ function RaidManager:Init()
 
     if f.btnRaidPicker then
         if UI.Skin and UI.Skin.SkinDropdownButton then
-            UI.Skin:SkinDropdownButton(f.btnRaidPicker)
+            UI.Skin:SkinDropdownButton(f.btnRaidPicker, { overlayLeftInset = 5 })
             registerPicker(f.btnRaidPicker, function() return raidMenuFrame end)
         end
         f.btnRaidPicker:SetScript("OnClick", function(self) ToggleRaidPickerMenu(self) end)
     end
     if f.btnDifficultyPicker then
         if UI.Skin and UI.Skin.SkinDropdownButton then
-            UI.Skin:SkinDropdownButton(f.btnDifficultyPicker)
+            UI.Skin:SkinDropdownButton(f.btnDifficultyPicker, { overlayLeftInset = 5 })
             registerPicker(f.btnDifficultyPicker, function() return difMenuFrame end)
         end
         f.btnDifficultyPicker:SetScript("OnClick", function(self) ToggleDifficultyPickerMenu(self) end)

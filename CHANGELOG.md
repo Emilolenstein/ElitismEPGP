@@ -6,6 +6,16 @@ Unreleased changes live under the `[Unreleased]` heading; when you cut a release
 
 ## [Unreleased]
 
+## [0.1.3] — 2026-05-24
+
+### Added
+- **Per-player decay breakdown in History.** Selecting a weekly-maintenance entry in the History detail view now lists every affected player with their individual EP/GP change, instead of only the summary line. Decay entries logged before this version show a note that no per-player breakdown was stored.
+
+### Fixed
+- **Global AceGUI layout breakage in other addons** (WeakAuras, ElvUI, and any AceConfig-based UI). The bundled Ace3 was a newer revision than the rest of the 3.3.5a ecosystem (AceGUI-3.0 r34 vs the server-standard r33; AceConfigDialog 60 vs 50/54). Because WoW keeps only the single highest-versioned copy of each LibStub library for the whole UI, our copy was winning the version race and being force-shared to every AceGUI addon. WeakAuras ships no AceGUI core of its own, so it rendered entirely through ours; the r34 Flow layout's `safelayoutcall`/`layoutrecursionblock` width guard is incompatible with the 3.3.5a WeakAuras/ElvUI backports, so nested option containers collapsed to a single narrow column. Downgraded the embedded `AceGUI-3.0` and `AceConfig-3.0` to the server-standard r33 set so ElitismEPGP no longer outranks (and overrides) other addons' Ace3. Our own options panel is unaffected. *(Note: any sibling addon still shipping the newer Ace3 — LootReserve, Rolz, epgploot2 — will reintroduce the same conflict until updated the same way.)*
+- **Officer-rank detection in weekly maintenance.** The guild-rank scan now reads the correct *Edit Officer Note* permission flag and treats the Guild Master rank as having full permissions. Previously the top rank was misread and some ranks could be classified incorrectly.
+- **Raid/difficulty picker highlight overhang.** The hover and selected highlight on the Raid and Difficulty dropdown buttons extended ~5 px past the button's left edge; it now stops flush. The Main-spec / Off-spec / Pass bid buttons share the same skin and are unchanged.
+
 ## [0.1.2] — 2026-05-15
 
 ### Changed
@@ -61,7 +71,8 @@ Initial public release.
 - Officer/RL settings page gated on the guild's "Edit Officer Note" rank.
 - MIT license, README, CHANGELOG, GitHub issue templates.
 
-[Unreleased]: https://github.com/Emilolenstein/ElitismEPGP/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/Emilolenstein/ElitismEPGP/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/Emilolenstein/ElitismEPGP/releases/tag/v0.1.3
 [0.1.2]: https://github.com/Emilolenstein/ElitismEPGP/releases/tag/v0.1.2
 [0.1.1]: https://github.com/Emilolenstein/ElitismEPGP/releases/tag/v0.1.1
 [0.1.0]: https://github.com/Emilolenstein/ElitismEPGP/releases/tag/v0.1.0

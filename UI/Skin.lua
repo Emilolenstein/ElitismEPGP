@@ -1080,7 +1080,13 @@ function Skin:SkinDropdownButton(btn, opts)
     -- face sits ~4 px in from bgN's left edge once the padding's accounted
     -- for, so widen these by 3 px (TOPRIGHT-anchored → grows leftward) to
     -- close most of that gap without spilling onto the dropshadow.
-    local OVERLAY_W = btnW + 3
+    --
+    -- opts.overlayLeftInset trims that left growth back per-call (the
+    -- overlays are TOPRIGHT-anchored, so a smaller width pulls the left
+    -- edge rightward while the right edge stays put). The raid/difficulty
+    -- pickers pass 5 to stop the highlight overhanging their left edge;
+    -- the MS/OS/Pass buttons leave it at 0 so their look is unchanged.
+    local OVERLAY_W = btnW + 3 - (opts.overlayLeftInset or 0)
     local bgH = makeTex("ARTWORK")
     bgH:SetSize(OVERLAY_W, btnH)
     bgH:SetPoint("TOPRIGHT", bgN, "TOPRIGHT", -2, 0)
