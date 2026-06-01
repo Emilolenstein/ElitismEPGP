@@ -67,9 +67,10 @@ addon.DEFAULT_SLOT_MULTIPLIERS = {
 -- a preset blank and still get a sensible award.
 -- ---------------------------------------------------------------------------
 addon.RAIDS = {
-    { key = "ZG",     name = "Zul'Gurub" },
-    { key = "MC",     name = "Molten Core" },
-    { key = "Onyxia", name = "Onyxia"     },
+    { key = "ZG",     name = "Zul'Gurub"     },
+    { key = "MC",     name = "Molten Core"   },
+    { key = "Onyxia", name = "Onyxia"        },
+    { key = "BWL",    name = "Blackwing Lair" },
 }
 
 addon.DIFFICULTIES = { "Normal", "Heroic", "Mythic", "Ascended" }

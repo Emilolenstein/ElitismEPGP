@@ -6,6 +6,11 @@ Unreleased changes live under the `[Unreleased]` heading; when you cut a release
 
 ## [Unreleased]
 
+## [0.1.4] — 2026-06-01
+
+### Added
+- **Blackwing Lair** added to the raid list. Appears in the Raid Manager raid picker and gets its own per-preset EP awards branch in Settings → Effort Points (On Time / End of Raid / First Kill / Boss Kill). Blank cells fall back to `PRESET_DEFAULTS` (10 EP) until an officer sets them; Heroic/Mythic/Ascended derive from the Normal value via the existing difficulty multipliers. Guild Info wire format already reserved the `B` letter code for BWL, so the new awards replicate to the guild with no protocol bump.
+
 ## [0.1.3] — 2026-05-24
 
 ### Added
@@ -71,7 +76,8 @@ Initial public release.
 - Officer/RL settings page gated on the guild's "Edit Officer Note" rank.
 - MIT license, README, CHANGELOG, GitHub issue templates.
 
-[Unreleased]: https://github.com/Emilolenstein/ElitismEPGP/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/Emilolenstein/ElitismEPGP/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/Emilolenstein/ElitismEPGP/releases/tag/v0.1.4
 [0.1.3]: https://github.com/Emilolenstein/ElitismEPGP/releases/tag/v0.1.3
 [0.1.2]: https://github.com/Emilolenstein/ElitismEPGP/releases/tag/v0.1.2
 [0.1.1]: https://github.com/Emilolenstein/ElitismEPGP/releases/tag/v0.1.1
